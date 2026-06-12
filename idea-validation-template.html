@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Validation Template</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@0,400;0,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+:root {
+  --bg:#0e0e0f;--surface:#161618;--surface2:#1e1e21;--border:#2a2a2e;--border-light:#222226;
+  --text:#f0ede8;--muted:#7a7780;--dim:#4a4750;
+  --accent:#e8ff47;--accent-dim:rgba(232,255,71,.12);--accent-b:rgba(232,255,71,.3);
+  --red:#ff5c5c;--red-dim:rgba(255,92,92,.12);
+  --green:#4dff91;--green-dim:rgba(77,255,145,.1);
+  --blue:#5c9fff;--blue-dim:rgba(92,159,255,.1);
+  --orange:#ffaa5c;--orange-dim:rgba(255,170,92,.1);
+  --nav-h:52px;
+  --ff:'DM Sans',sans-serif;--fm:'DM Mono',monospace;--fd:'Syne',sans-serif;
+  --r:6px;--max:860px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+body{font-family:var(--ff);background:var(--bg);color:var(--text);font-size:13.5px;line-height:1.65}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(14,14,15,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:12px}
+.nav-left{display:flex;align-items:center;gap:14px}
+.brand{font-family:var(--fd);font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 2.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.nav-links{display:flex;gap:2px}
+.nav-link{font-family:var(--fm);font-size:10px;padding:4px 9px;border-radius:3px;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:all .15s;text-decoration:none}
+.nav-link:hover{color:var(--muted);background:var(--surface2)}
+.nav-actions{display:flex;gap:6px}
+.btn{font-family:var(--fm);font-size:11px;font-weight:500;padding:5px 11px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn:hover{border-color:var(--dim);color:var(--text)}
+.btn.primary{background:var(--accent);color:#0e0e0f;border-color:var(--accent);font-weight:700}
+.btn.primary:hover{background:#d4eb40}
+.btn.danger{color:var(--red);border-color:rgba(255,92,92,.3)}
+.btn.danger:hover{background:var(--red-dim)}
+
+/* PROGRESS */
+.progress-bar{height:2px;background:var(--border);position:sticky;top:var(--nav-h);z-index:99}
+.progress-fill{height:100%;background:var(--accent);width:0%;transition:width .4s ease}
+
+/* PAGE */
+.page{max-width:var(--max);margin:0 auto;padding:0 24px 120px}
+
+/* HERO */
+.hero{padding:56px 0 44px;border-bottom:1px solid var(--border)}
+.hero-tag{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-b);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:18px}
+.hero h1{font-family:var(--fd);font-size:clamp(30px,6vw,52px);font-weight:800;letter-spacing:-.04em;line-height:1.0;margin-bottom:12px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero p{font-size:14px;color:var(--muted);max-width:500px;line-height:1.75;margin-bottom:24px}
+.hero-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.hero-card strong{display:block;font-family:var(--fd);font-size:12px;font-weight:700;margin-bottom:4px}
+.hero-card span{font-size:12px;color:var(--muted)}
+
+/* STAGE SECTION */
+.stage{padding-top:52px}
+.stage-divider{border:none;border-top:2px solid var(--border);margin:0}
+.eyebrow{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.stage-title{font-family:var(--fd);font-size:clamp(22px,4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:10px}
+.stage-title em{color:var(--accent);font-style:normal}
+.stage-desc{font-size:13.5px;color:var(--muted);max-width:560px;line-height:1.7}
+.stage-output{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--fm);font-size:10.5px;color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-b);padding:5px 12px;border-radius:20px}
+.stage-header{margin-bottom:26px;padding-bottom:26px;border-bottom:1px solid var(--border)}
+
+/* BLOCK */
+.block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.block:focus-within{border-color:#333}
+.block-hd{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border-light);background:var(--surface2)}
+.block-icon{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.block-title{font-family:var(--fd);font-size:13px;font-weight:700;flex:1}
+.block-tag{font-family:var(--fm);font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--border);color:var(--dim);white-space:nowrap}
+.block-body{padding:16px 18px}
+
+/* LABELS & INPUTS */
+label.lbl{display:block;font-family:var(--fm);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:5px;margin-top:14px}
+label.lbl:first-child{margin-top:0}
+textarea,input[type="text"],input[type="number"],select{width:100%;font-family:var(--ff);font-size:13px;line-height:1.6;padding:8px 11px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);resize:vertical;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none}
+textarea::placeholder,input::placeholder{color:var(--dim)}
+textarea:focus,input:focus,select:focus{outline:none;border-color:rgba(232,255,71,.4);box-shadow:0 0 0 3px rgba(232,255,71,.05)}
+textarea{min-height:70px}textarea.sm{min-height:50px}textarea.lg{min-height:100px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7780'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0}
+.span2{grid-column:1/-1}
+
+/* CELLS */
+.cell{border:1px solid var(--border);border-radius:5px;background:var(--bg);overflow:hidden}
+.cell .clbl{font-family:var(--fm);font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);padding:6px 10px 5px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center}
+.cell textarea,.cell input,.cell select{border:none;border-radius:0;background:transparent}
+.cell textarea:focus,.cell input:focus,.cell select:focus{box-shadow:none;border:none}
+.cell.hi{border-color:var(--accent-b);background:rgba(232,255,71,.03)}
+.cell.hi .clbl{color:var(--accent);border-bottom-color:var(--accent-b)}
+.cell.bad{border-color:rgba(255,92,92,.35);background:var(--red-dim)}
+.cell.bad .clbl{color:var(--red);border-bottom-color:rgba(255,92,92,.2)}
+.cell.good{border-color:rgba(77,255,145,.3);background:var(--green-dim)}
+.cell.good .clbl{color:var(--green);border-bottom-color:rgba(77,255,145,.2)}
+
+/* CALLOUTS */
+.callout{border-radius:5px;padding:11px 13px;font-size:12.5px;line-height:1.65;margin:12px 0;display:flex;gap:10px}
+.callout .ci{flex-shrink:0;font-size:14px;margin-top:1px}
+.callout.warn{background:var(--orange-dim);border:1px solid rgba(255,170,92,.25);color:var(--orange)}
+.callout.info{background:var(--blue-dim);border:1px solid rgba(92,159,255,.2);color:var(--blue)}
+.callout.bad{background:var(--red-dim);border:1px solid rgba(255,92,92,.25);color:var(--red)}
+.callout.good{background:var(--green-dim);border:1px solid rgba(77,255,145,.2);color:#a0ffcc}
+.callout.accent{background:var(--accent-dim);border:1px solid var(--accent-b);color:var(--accent)}
+
+/* FORMULA */
+.formula{font-family:var(--fm);font-size:12.5px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:13px 15px;color:var(--muted);line-height:1.9;margin:12px 0}
+.formula strong{color:var(--accent);font-weight:500}
+
+/* HMW PREVIEW */
+.hmw-preview{font-family:var(--fd);font-size:15px;font-weight:600;font-style:italic;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:13px 15px;margin:12px 0;line-height:1.5}
+.hmw-preview em{color:var(--accent);font-style:normal}
+
+/* SCORES */
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.sc{border:1px solid var(--border);border-radius:5px;background:var(--bg);padding:13px 10px 10px;text-align:center}
+.sc .slbl{font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:10px;display:block}
+.sc .semoji{font-size:20px;display:block;margin-bottom:8px}
+.sc input[type="number"]{width:56px;text-align:center;font-size:22px;font-weight:700;font-family:var(--fd);background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px;color:var(--accent)}
+
+/* SIGNAL */
+.signal-bar{height:4px;background:var(--border);border-radius:2px;margin:10px 0 6px;overflow:hidden}
+.signal-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--orange),var(--green));width:0%;transition:width .6s ease}
+
+/* PERSONA QUOTE */
+.pquote{font-family:var(--fd);font-size:16px;font-weight:600;font-style:italic;color:var(--text);background:var(--surface2);border-left:3px solid var(--accent);padding:13px 15px;border-radius:0 4px 4px 0;margin:12px 0;line-height:1.45}
+
+/* INTERVIEW */
+.int-card{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:12px;background:var(--bg)}
+.int-hd{background:var(--surface2);border-bottom:1px solid var(--border-light);padding:8px 13px;font-family:var(--fm);font-size:10.5px;font-weight:500;color:var(--muted);display:flex;justify-content:space-between}
+.int-body{padding:13px}
+
+/* MARKET */
+.mkt-row{display:grid;grid-template-columns:64px 1fr 130px;gap:8px;align-items:start;margin-bottom:8px}
+.mkt-lbl{font-family:var(--fm);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);padding-top:9px}
+
+/* VP */
+.vp-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:11px 13px;font-size:13px;margin:10px 0}
+.vp-word{color:var(--dim);font-style:italic}
+.vp-row input{border:none;border-bottom:1.5px solid var(--border);border-radius:0;background:transparent;padding:2px 4px;min-width:80px;flex:1;font-style:italic;color:var(--accent)}
+.vp-row input:focus{outline:none;border-bottom-color:var(--accent);box-shadow:none}
+.vp-row input::placeholder{color:var(--dim);font-style:normal}
+
+/* CANVAS */
+.canvas{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:12px 0}
+.canvas-sec{font-family:var(--fm);font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);padding:7px 13px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.crow{display:grid}
+.crow.c2{grid-template-columns:1fr 1fr}
+.crow.c3{grid-template-columns:1fr 1fr 1fr}
+.ccell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden}
+.ccell:last-child{border-right:none}
+.crow:last-child .ccell{border-bottom:none}
+.ccell .cclbl{font-family:var(--fm);font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);padding:6px 10px 4px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between}
+.hard{color:var(--red);font-size:9px}
+.ccell textarea{border:none;border-radius:0;background:transparent;min-height:80px}
+.ccell textarea:focus{box-shadow:none;border:none}
+
+/* ASSUMPTIONS */
+.arow{display:grid;grid-template-columns:3fr 1.2fr 1.5fr 2fr;gap:8px;margin-bottom:8px;align-items:start}
+.arow .ahd{font-family:var(--fm);font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);padding:4px 0}
+
+/* EVIDENCE */
+.ev-row{display:grid;grid-template-columns:1fr 24px 1fr;gap:8px;align-items:center;margin-bottom:8px}
+.ev-arr{text-align:center;color:var(--dim);font-weight:700;font-size:16px}
+
+/* VERDICT */
+.verdict-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.vcell{border:2px solid var(--border);border-radius:8px;padding:15px 13px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg)}
+.vcell:hover{border-color:var(--dim)}
+.vcell.sel-go{border-color:var(--green);background:var(--green-dim)}
+.vcell.sel-pivot{border-color:var(--orange);background:var(--orange-dim)}
+.vcell.sel-kill{border-color:var(--red);background:var(--red-dim)}
+.vcell .vi{font-size:26px;display:block;margin-bottom:7px}
+.vcell .vl{font-family:var(--fd);font-size:13px;font-weight:800;display:block;margin-bottom:4px}
+.vcell .vd{font-size:11px;color:var(--dim);line-height:1.5}
+
+/* CHECKLIST */
+.checklist{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:18px}
+.cl-hd{background:var(--surface2);border-bottom:1px solid var(--border);padding:9px 15px;font-family:var(--fm);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);display:flex;align-items:center;gap:8px}
+.cl-hd::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.ci-row{display:flex;align-items:flex-start;gap:11px;padding:9px 15px;border-bottom:1px solid var(--border-light);transition:background .1s}
+.ci-row:last-child{border-bottom:none}
+.ci-row.done{background:rgba(77,255,145,.03)}
+.ci-row input[type="checkbox"]{width:14px;height:14px;accent-color:var(--accent);flex-shrink:0;margin-top:3px;cursor:pointer}
+.ci-row label{font-size:13px;cursor:pointer;color:var(--muted)}
+.ci-row.done label{text-decoration:line-through;color:var(--dim)}
+
+/* MISC */
+.add-btn{font-family:var(--fm);font-size:11px;padding:6px 13px;border:1px dashed var(--border);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;margin-top:8px;transition:all .15s}
+.add-btn:hover{border-color:var(--dim);color:var(--muted);background:var(--surface2)}
+hr.div{border:none;border-top:1px solid var(--border-light);margin:16px 0}
+
+/* MODALS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:26px 30px;max-width:420px;width:90%}
+.modal h3{font-family:var(--fd);font-size:18px;font-weight:800;margin-bottom:10px}
+.modal p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end}
+.mbtn{font-family:var(--fm);font-size:12px;padding:7px 15px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer}
+.mbtn:hover{color:var(--text);border-color:var(--dim)}
+.mbtn.acc{background:var(--accent);color:#0e0e0f;border-color:var(--accent);font-weight:700}
+.mbtn.bad{color:var(--red);border-color:rgba(255,92,92,.4)}
+.mbtn.bad:hover{background:var(--red-dim)}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--surface);border:1px solid var(--accent-b);color:var(--accent);font-family:var(--fm);font-size:12px;padding:9px 16px;border-radius:5px;z-index:400;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:640px){
+  .g2,.g3,.score-grid,.verdict-grid{grid-template-columns:1fr}
+  .arow{grid-template-columns:1fr 1fr}
+  .crow.c3{grid-template-columns:1fr 1fr}
+  .mkt-row{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .hero-cards{grid-template-columns:1fr}
+}
+
+/* ═══════════════════════════════════════
+   PRINT — Ctrl+P captures entire page
+═══════════════════════════════════════ */
+@media print {
+  @page{margin:13mm 12mm;size:A4}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+
+  /* hide chrome */
+  .nav,.progress-bar,.add-btn,.overlay,.toast{display:none!important}
+
+  /* reset layout */
+  body{background:#fff!important;color:#1a1916!important;font-size:11px!important}
+  .page{max-width:100%!important;padding:0!important}
+
+  /* hero */
+  .hero{padding:18px 0 14px!important;border-bottom:2px solid #1a1916!important}
+  .hero-tag{background:transparent!important;border-color:#888!important;color:#555!important}
+  .hero h1{font-size:26px!important;color:#1a1916!important}
+  .hero h1 em{color:#333!important}
+  .hero p{color:#555!important}
+  .hero-cards{grid-template-columns:repeat(3,1fr)!important}
+  .hero-card{background:#f5f5f5!important;border-color:#ddd!important}
+  .hero-card strong{color:#1a1916!important}
+  .hero-card span{color:#555!important}
+
+  /* stage sections */
+  .stage-divider{border-top:2px solid #1a1916!important;page-break-before:always!important}
+  .stage-divider:first-of-type{page-break-before:avoid!important}
+  .stage{padding-top:20px!important}
+  .eyebrow{color:#888!important}
+  .eyebrow::after{background:#ddd!important}
+  .stage-title{font-size:20px!important;color:#1a1916!important}
+  .stage-title em{color:#333!important}
+  .stage-desc{color:#555!important}
+  .stage-output{background:#f5f5f5!important;border-color:#ccc!important;color:#444!important}
+  .stage-header{border-bottom-color:#ddd!important;margin-bottom:14px!important;padding-bottom:14px!important}
+
+  /* blocks */
+  .block{background:#fff!important;border-color:#ddd!important;margin-bottom:9px!important;break-inside:avoid}
+  .block-hd{background:#f5f5f5!important;border-bottom-color:#e0e0e0!important}
+  .block-title{color:#1a1916!important}
+  .block-tag{border-color:#ccc!important;color:#777!important}
+  .block-body{padding:11px 13px!important}
+
+  /* inputs — show as text */
+  textarea,input[type="text"],input[type="number"],select{
+    background:transparent!important;border:none!important;
+    border-bottom:1px solid #e0e0e0!important;border-radius:0!important;
+    color:#1a1916!important;padding:3px 2px!important;font-size:11px!important;
+    resize:none!important;box-shadow:none!important;min-height:0!important;
+    overflow:visible!important
+  }
+  textarea{min-height:22px!important}textarea.sm{min-height:18px!important}
+
+  /* labels */
+  label.lbl{color:#999!important;margin-top:9px!important}
+
+  /* cells */
+  .cell{background:#fafafa!important;border-color:#e0e0e0!important}
+  .cell .clbl{color:#999!important;border-bottom-color:#eee!important;background:#f5f5f5!important}
+  .cell.hi{background:#fafafa!important;border-color:#ccc!important}
+  .cell.hi .clbl{color:#555!important}
+  .cell.bad{background:#fff8f8!important;border-color:#f0c0c0!important}
+  .cell.bad .clbl{color:#c0392b!important}
+  .cell.good{background:#f8fff8!important;border-color:#b0e0b0!important}
+  .cell.good .clbl{color:#2d6a2d!important}
+
+  /* callouts */
+  .callout{border-color:#ddd!important}
+  .callout.warn{background:#fffbf0!important;color:#7a5000!important;border-color:#e0c070!important}
+  .callout.info{background:#f0f6ff!important;color:#1a3a6b!important;border-color:#a0c0e0!important}
+  .callout.bad{background:#fff5f5!important;color:#8b0000!important;border-color:#f0c0c0!important}
+  .callout.accent{background:#f8fff0!important;color:#3a5000!important;border-color:#b0d070!important}
+  .callout.good{background:#f0fff5!important;color:#1a4a1a!important;border-color:#90d0a0!important}
+
+  .formula{background:#f5f5f5!important;border-color:#ddd!important;color:#555!important}
+  .formula strong{color:#1a1916!important}
+  .hmw-preview{background:#f5f5f5!important;border-color:#ddd!important;border-left-color:#555!important;color:#333!important}
+  .hmw-preview em{color:#1a1916!important}
+  .pquote{background:#f5f5f5!important;border-left-color:#555!important;color:#1a1916!important}
+
+  .sc{background:#fafafa!important;border-color:#e0e0e0!important}
+  .sc .slbl{color:#888!important}
+  .sc input[type="number"]{color:#1a1916!important;background:#eee!important;border-color:#ccc!important}
+  .signal-bar{background:#e0e0e0!important}
+  .signal-fill{background:linear-gradient(90deg,#c0392b,#e67e22,#27ae60)!important}
+
+  /* canvas */
+  .canvas{border-color:#ddd!important}
+  .canvas-sec{background:#f0f0f0!important;border-bottom-color:#e0e0e0!important;color:#777!important}
+  .ccell{border-color:#e0e0e0!important}
+  .ccell .cclbl{background:#f8f8f8!important;color:#888!important;border-bottom-color:#eee!important}
+  .hard{color:#c0392b!important}
+  .ccell textarea{min-height:48px!important}
+
+  .vp-row{background:#f5f5f5!important;border-color:#ddd!important}
+  .vp-word{color:#888!important}
+  .vp-row input{color:#1a1916!important;border-bottom-color:#ccc!important}
+
+  .int-card{background:#fff!important;border-color:#ddd!important}
+  .int-hd{background:#f5f5f5!important;color:#666!important;border-bottom-color:#e0e0e0!important}
+
+  .arow .ahd{color:#888!important}
+  .ev-arr{color:#888!important}
+
+  .vcell{background:#fafafa!important;border-color:#ddd!important}
+  .vcell.sel-go{background:#f0fff5!important;border-color:#27ae60!important}
+  .vcell.sel-pivot{background:#fff9f0!important;border-color:#e67e22!important}
+  .vcell.sel-kill{background:#fff5f5!important;border-color:#c0392b!important}
+  .vcell .vl{color:#1a1916!important}
+  .vcell .vd{color:#777!important}
+
+  .checklist{border-color:#ddd!important}
+  .cl-hd{background:#f0f0f0!important;color:#777!important;border-bottom-color:#e0e0e0!important}
+  .cl-hd::before{background:#27ae60!important}
+  .ci-row{border-bottom-color:#f0f0f0!important}
+  .ci-row label{color:#555!important}
+  .ci-row.done{background:#f8fff8!important}
+  .ci-row.done label{color:#aaa!important}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-left">
+    <div class="brand"><div class="dot"></div>Idea Validation Template</div>
+    <div class="nav-links">
+      <a class="nav-link" href="#s1">01 Problem</a>
+      <a class="nav-link" href="#s2">02 Customer</a>
+      <a class="nav-link" href="#s3">03 Solution</a>
+      <a class="nav-link" href="#s4">04 Biz Model</a>
+      <a class="nav-link" href="#s5">05 Go/No-Go</a>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="btn primary" onclick="window.print()">🖨 Print / Save PDF</button>
+    <button class="btn" onclick="saveFile()">💾 Save</button>
+    <button class="btn" onclick="showLoadModal()">📂 Load</button>
+    <button class="btn" onclick="copyText()">📋 Copy</button>
+    <button class="btn danger" onclick="showClearModal()">✕ Clear</button>
+  </div>
+</nav>
+
+<div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Structured · Evidence-Based · Opinionated</div>
+    <h1>Stop <em>guessing.</em><br>Start validating.</h1>
+    <p>A five-stage framework to test if your idea is worth building — before you invest time, money, or reputation in the wrong thing. Fill every section top to bottom, then hit Print to save as PDF.</p>
+    <div class="hero-cards">
+      <div class="hero-card"><strong>Problem First</strong><span>Fall in love with the problem, not the solution. No solution talk until Stage 3.</span></div>
+      <div class="hero-card"><strong>Evidence Over Opinion</strong><span>Every assumption gets marked. Replace "I think" with "we know."</span></div>
+      <div class="hero-card"><strong>Fast &amp; Cheap</strong><span>Validation costs days and conversations — not months and euros.</span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STAGE 1 ═══════════════ -->
+  <hr class="stage-divider" id="s1">
+  <div class="stage">
+    <div class="stage-header">
+      <div class="eyebrow">Stage 01 of 05</div>
+      <div class="stage-title">Define the <em>Problem</em></div>
+      <div class="stage-desc">The only job of Stage 1 is to get specific about the problem — not the solution. A vague problem leads to a vague product nobody pays for.</div>
+      <div class="stage-output">↳ Output: HMW statement · Felt/Frequent/Costly score · 3 assumptions</div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--accent-dim)">💡</div><div class="block-title">Idea Snapshot</div><div class="block-tag">Start here</div></div>
+      <div class="block-body">
+        <div class="callout warn"><span class="ci">⚠</span><div>Write the idea in one sentence — then put it away. The rest of Stage 1 is about the <strong>problem only</strong>. Come back to the idea in Stage 3.</div></div>
+        <label class="lbl">Your idea in one sentence</label>
+        <textarea class="sm" data-key="s1_idea" placeholder="e.g. An app that helps first-time landlords stay compliant with Irish rental law without hiring a solicitor…"></textarea>
+        <label class="lbl">What problem does it solve?</label>
+        <textarea class="sm" data-key="s1_problem_raw" placeholder="Describe the problem in plain language — no jargon, no solution language…"></textarea>
+        <label class="lbl">Who first told you about this problem?</label>
+        <input type="text" data-key="s1_source" placeholder="e.g. my cousin who rents a flat in Dublin complained that…">
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--blue-dim)">🔍</div><div class="block-title">How Might We Statement</div><div class="block-tag">North star</div></div>
+      <div class="block-body">
+        <div class="formula">"How might we help <strong>[specific person]</strong> who needs to <strong>[accomplish goal]</strong><br>but struggles with <strong>[specific obstacle]</strong> in the context of <strong>[when / where]</strong>?"</div>
+        <div class="g2">
+          <div><label class="lbl">Specific person — who exactly?</label><textarea class="sm" data-key="s1_hmw_who" placeholder="Be precise — job title, life stage, geography…"></textarea></div>
+          <div><label class="lbl">Goal they're trying to accomplish</label><textarea class="sm" data-key="s1_hmw_goal" placeholder="The outcome they want…"></textarea></div>
+          <div><label class="lbl">Specific obstacle they face</label><textarea class="sm" data-key="s1_hmw_obstacle" placeholder="The friction or blocker…"></textarea></div>
+          <div><label class="lbl">Context — when / where?</label><textarea class="sm" data-key="s1_hmw_context" placeholder="The moment the problem surfaces…"></textarea></div>
+        </div>
+        <div class="hmw-preview">"How might we help <em id="p-who">___</em> who needs to <em id="p-goal">___</em> but struggles with <em id="p-obs">___</em> in the context of <em id="p-ctx">___</em>?"</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--orange-dim)">📊</div><div class="block-title">Problem Quality — Felt / Frequent / Costly</div><div class="block-tag">Rate 1–10</div></div>
+      <div class="block-body">
+        <div class="callout info"><span class="ci">ℹ</span><div>A fundable problem scores 7+ on all three. Any dimension below 5 — reconsider the problem, or find a sharper version.</div></div>
+        <div class="score-grid">
+          <div class="sc"><span class="semoji">😤</span><span class="slbl">Felt — felt personally?</span><input type="number" data-key="s1_felt" min="1" max="10" placeholder="–" oninput="updateSignal()"></div>
+          <div class="sc"><span class="semoji">🔁</span><span class="slbl">Frequent — happens often?</span><input type="number" data-key="s1_freq" min="1" max="10" placeholder="–" oninput="updateSignal()"></div>
+          <div class="sc"><span class="semoji">💸</span><span class="slbl">Costly — time/money/emotion?</span><input type="number" data-key="s1_cost" min="1" max="10" placeholder="–" oninput="updateSignal()"></div>
+        </div>
+        <div style="font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:4px;">Signal strength</div>
+        <div class="signal-bar"><div class="signal-fill" id="sfill"></div></div>
+        <div style="font-family:var(--fm);font-size:11px;color:var(--dim)" id="slabel">Fill in all three scores above</div>
+        <label class="lbl" style="margin-top:14px;">What do people do today to cope?</label>
+        <textarea data-key="s1_workaround" placeholder="Current workaround, tool, or habit — what imperfect solution do they already use or pay for?"></textarea>
+        <label class="lbl">Why is the existing solution inadequate?</label>
+        <textarea class="sm" data-key="s1_inadequate" placeholder="What gap does the current workaround leave?"></textarea>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--red-dim)">⚠</div><div class="block-title">Stage 1 Assumptions</div><div class="block-tag">Write before testing</div></div>
+      <div class="block-body">
+        <div class="callout bad"><span class="ci">🚨</span><div>List every assumption <strong>before</strong> you talk to anyone. The point is to write what you believe now, so you can see exactly what changed after interviews.</div></div>
+        <label class="lbl">3 things we're assuming that could be wrong</label>
+        <textarea data-key="s1_assumptions" placeholder="1. We assume this problem is common enough to be a market, not just a personal frustration&#10;2. We assume people have no good solution for this today&#10;3. We assume the problem is painful enough that someone would pay to solve it"></textarea>
+        <label class="lbl">The single assumption that — if wrong — means there's no business here</label>
+        <textarea class="sm" data-key="s1_killer" placeholder="The one thing that has to be true for this to be worth building…"></textarea>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <div class="cl-hd">Stage 1 Checklist</div>
+      <div class="ci-row" id="cw-s1c1"><input type="checkbox" id="s1c1" data-key="s1c1" onchange="ck(this)"><label for="s1c1">Idea captured in one sentence</label></div>
+      <div class="ci-row" id="cw-s1c2"><input type="checkbox" id="s1c2" data-key="s1c2" onchange="ck(this)"><label for="s1c2">HMW statement written — specific person, goal, obstacle, context</label></div>
+      <div class="ci-row" id="cw-s1c3"><input type="checkbox" id="s1c3" data-key="s1c3" onchange="ck(this)"><label for="s1c3">Felt / Frequent / Costly scored</label></div>
+      <div class="ci-row" id="cw-s1c4"><input type="checkbox" id="s1c4" data-key="s1c4" onchange="ck(this)"><label for="s1c4">Current workaround described</label></div>
+      <div class="ci-row" id="cw-s1c5"><input type="checkbox" id="s1c5" data-key="s1c5" onchange="ck(this)"><label for="s1c5">3 assumptions written — before talking to anyone</label></div>
+      <div class="ci-row" id="cw-s1c6"><input type="checkbox" id="s1c6" data-key="s1c6" onchange="ck(this)"><label for="s1c6">Killer assumption identified</label></div>
+      <div class="ci-row" id="cw-s1c7"><input type="checkbox" id="s1c7" data-key="s1c7" onchange="ck(this)"><label for="s1c7">No solution defined yet — only the problem space</label></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STAGE 2 ═══════════════ -->
+  <hr class="stage-divider" id="s2">
+  <div class="stage">
+    <div class="stage-header">
+      <div class="eyebrow">Stage 02 of 05</div>
+      <div class="stage-title">Find the <em>Customer</em></div>
+      <div class="stage-desc">A startup that serves everyone serves no one. Get uncomfortably specific about one person — and talk to real ones before you build anything.</div>
+      <div class="stage-output">↳ Output: Persona card · Pain architecture (3 layers) · 3+ interview findings · Market sizing</div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--blue-dim)">👤</div><div class="block-title">Persona Card — Hypothesis Draft</div><div class="block-tag">Update after interviews</div></div>
+      <div class="block-body">
+        <div class="callout warn"><span class="ci">⚠</span><div>Fill this now as a hypothesis. Every field you change after interviewing real people is a validation signal.</div></div>
+        <div class="g2">
+          <div class="cell"><div class="clbl">Full name (fictional)</div><input type="text" data-key="s2_name" placeholder="e.g. Aoife Murphy"></div>
+          <div class="cell"><div class="clbl">Age, city, life stage</div><input type="text" data-key="s2_age" placeholder="e.g. 34, Dublin, first-time landlord"></div>
+          <div class="cell span2"><div class="clbl">Role / occupation</div><input type="text" data-key="s2_role" placeholder="e.g. Operations Manager at 20-person SME, landlord on the side"></div>
+          <div class="cell span2"><div class="clbl">What does a typical day look like?</div><textarea data-key="s2_day" placeholder="Walk through their day — tools, people, where friction emerges…"></textarea></div>
+          <div class="cell span2"><div class="clbl">Top 3 frustrations connected to your problem</div><textarea data-key="s2_frustrations" placeholder="1. …&#10;2. …&#10;3. …"></textarea></div>
+        </div>
+        <label class="lbl">Direct quote they might actually say</label>
+        <div class="pquote" id="pquote" style="color:var(--dim);font-style:italic;">"…"</div>
+        <textarea class="sm" data-key="s2_quote" placeholder='"I spend more time dealing with this than my actual work…"' oninput="updateQuote(this.value)"></textarea>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--red-dim)">🧅</div><div class="block-title">Pain Architecture — 3 Layers</div><div class="block-tag">Go deeper</div></div>
+      <div class="block-body">
+        <div class="callout info"><span class="ci">ℹ</span><div>Products that only address the surface layer get used once. The emotional layer is where loyalty lives. If your emotional layer sounds generic, keep digging.</div></div>
+        <div class="g3">
+          <div class="cell"><div class="clbl" style="color:var(--muted)">🔍 Surface</div><textarea data-key="s2_surface" placeholder="What they complain about. Observable, speakable."></textarea></div>
+          <div class="cell"><div class="clbl" style="color:var(--orange)">⚙ Root cause</div><textarea data-key="s2_root" placeholder="The underlying structural reason the problem exists."></textarea></div>
+          <div class="cell hi"><div class="clbl">💛 Emotional</div><textarea data-key="s2_emotional" placeholder="How it makes them feel. The almost-embarrassing truth."></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--green-dim)">🎙</div><div class="block-title">Customer Interviews</div><div class="block-tag">Min. 5 before Stage 3</div></div>
+      <div class="block-body">
+        <div class="callout accent"><span class="ci">⚡</span><div><strong>The Mom Test rule:</strong> Never ask "would you use this?" Ask "tell me about the last time you dealt with this." Behaviour is data. Opinions about the future are noise.</div></div>
+        <div id="int-list">
+          <div class="int-card">
+            <div class="int-hd"><span>Interview 01</span><span style="font-size:9px;color:var(--dim)">Record immediately — memory degrades fast</span></div>
+            <div class="int-body">
+              <div class="g2"><div><label class="lbl" style="margin-top:0">Who (role, not name)</label><input type="text" data-key="i1_who" placeholder="e.g. Landlord, 2 properties, Dublin"></div><div><label class="lbl" style="margin-top:0">How reached</label><input type="text" data-key="i1_method" placeholder="WhatsApp / cold LinkedIn…"></div></div>
+              <label class="lbl">Most surprising thing they said</label><textarea class="sm" data-key="i1_surprise" placeholder="Verbatim if possible…"></textarea>
+              <label class="lbl">Do they have the problem?</label><textarea class="sm" data-key="i1_problem" placeholder="Yes / No / Partial — exact words…"></textarea>
+              <label class="lbl">What do they do about it today?</label><textarea class="sm" data-key="i1_today" placeholder="Current workaround…"></textarea>
+              <label class="lbl">Key insight — what this changes in our thinking</label><textarea class="sm" data-key="i1_insight" placeholder="What assumption this confirms or kills…"></textarea>
+            </div>
+          </div>
+          <div class="int-card">
+            <div class="int-hd"><span>Interview 02</span></div>
+            <div class="int-body">
+              <div class="g2"><div><label class="lbl" style="margin-top:0">Who</label><input type="text" data-key="i2_who"></div><div><label class="lbl" style="margin-top:0">How reached</label><input type="text" data-key="i2_method"></div></div>
+              <label class="lbl">Most surprising</label><textarea class="sm" data-key="i2_surprise"></textarea>
+              <label class="lbl">Have the problem?</label><textarea class="sm" data-key="i2_problem"></textarea>
+              <label class="lbl">Today's workaround</label><textarea class="sm" data-key="i2_today"></textarea>
+              <label class="lbl">Key insight</label><textarea class="sm" data-key="i2_insight"></textarea>
+            </div>
+          </div>
+          <div class="int-card">
+            <div class="int-hd"><span>Interview 03</span></div>
+            <div class="int-body">
+              <div class="g2"><div><label class="lbl" style="margin-top:0">Who</label><input type="text" data-key="i3_who"></div><div><label class="lbl" style="margin-top:0">How reached</label><input type="text" data-key="i3_method"></div></div>
+              <label class="lbl">Most surprising</label><textarea class="sm" data-key="i3_surprise"></textarea>
+              <label class="lbl">Have the problem?</label><textarea class="sm" data-key="i3_problem"></textarea>
+              <label class="lbl">Today's workaround</label><textarea class="sm" data-key="i3_today"></textarea>
+              <label class="lbl">Key insight</label><textarea class="sm" data-key="i3_insight"></textarea>
+            </div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addInterview()">+ Add interview</button>
+        <hr class="div" style="margin-top:16px">
+        <label class="lbl">What we were wrong about vs Stage 1 assumptions</label>
+        <textarea data-key="s2_wrong" placeholder="Which assumptions turned out to be incorrect? What surprised you most?"></textarea>
+        <label class="lbl">Updated HMW (if interviews changed the problem definition)</label>
+        <textarea class="sm" data-key="s2_updated_hmw" placeholder="Revised version — or write 'unchanged' if it held up…"></textarea>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--accent-dim)">📐</div><div class="block-title">Market Sizing — Bottom Up</div><div class="block-tag">Show the math</div></div>
+      <div class="block-body">
+        <div class="callout warn"><span class="ci">⚠</span><div>Find one real anchor stat and multiply up. Vague top-down claims ("the global wellness market is $4.2T") destroy credibility. Show every step of the calculation.</div></div>
+        <div style="display:grid;grid-template-columns:64px 1fr 130px;gap:8px;font-family:var(--fm);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:6px"><div>Layer</div><div>Calculation</div><div>Total</div></div>
+        <div class="mkt-row"><div class="mkt-lbl">TAM</div><textarea class="sm" data-key="s2_tam" placeholder="e.g. 380,000 private landlords in Ireland × avg. €X/yr spent on compliance…"></textarea><input type="text" data-key="s2_tam_n" placeholder="€___" style="font-family:var(--fm);color:var(--accent)"></div>
+        <div class="mkt-row"><div class="mkt-lbl">SAM</div><textarea class="sm" data-key="s2_sam" placeholder="Segment you can realistically reach with your channel…"></textarea><input type="text" data-key="s2_sam_n" placeholder="€___" style="font-family:var(--fm);color:var(--accent)"></div>
+        <div class="mkt-row"><div class="mkt-lbl">SOM</div><textarea class="sm" data-key="s2_som" placeholder="What you can realistically capture in year 3…"></textarea><input type="text" data-key="s2_som_n" placeholder="€___" style="font-family:var(--fm);color:var(--accent)"></div>
+        <label class="lbl">Sources — cite all anchor data points</label>
+        <textarea class="sm" data-key="s2_sources" placeholder="URL or description of every data source used…"></textarea>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <div class="cl-hd">Stage 2 Checklist</div>
+      <div class="ci-row" id="cw-s2c1"><input type="checkbox" id="s2c1" data-key="s2c1" onchange="ck(this)"><label for="s2c1">Persona card filled — name, role, context, frustrations, quote</label></div>
+      <div class="ci-row" id="cw-s2c2"><input type="checkbox" id="s2c2" data-key="s2c2" onchange="ck(this)"><label for="s2c2">Pain architecture — all 3 layers written</label></div>
+      <div class="ci-row" id="cw-s2c3"><input type="checkbox" id="s2c3" data-key="s2c3" onchange="ck(this)"><label for="s2c3">At least 3 real interviews completed and documented</label></div>
+      <div class="ci-row" id="cw-s2c4"><input type="checkbox" id="s2c4" data-key="s2c4" onchange="ck(this)"><label for="s2c4">Assumptions updated — what we were wrong about</label></div>
+      <div class="ci-row" id="cw-s2c5"><input type="checkbox" id="s2c5" data-key="s2c5" onchange="ck(this)"><label for="s2c5">TAM / SAM / SOM calculated with real math</label></div>
+      <div class="ci-row" id="cw-s2c6"><input type="checkbox" id="s2c6" data-key="s2c6" onchange="ck(this)"><label for="s2c6">HMW updated if interviews changed the problem definition</label></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STAGE 3 ═══════════════ -->
+  <hr class="stage-divider" id="s3">
+  <div class="stage">
+    <div class="stage-header">
+      <div class="eyebrow">Stage 03 of 05</div>
+      <div class="stage-title">Test the <em>Solution</em></div>
+      <div class="stage-desc">Build the minimum thing needed to answer one question: do real people understand and want this? Not a finished product — a testable hypothesis.</div>
+      <div class="stage-output">↳ Output: Solution concept · Prototype link · 5+ reactions · Updated assumptions</div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--accent-dim)">🎯</div><div class="block-title">Solution Concept</div><div class="block-tag">One concept only</div></div>
+      <div class="block-body">
+        <div class="callout info"><span class="ci">ℹ</span><div>Generate many ideas, commit to one to test. Testing two solutions simultaneously gives inconclusive data about both. Pick the one that directly addresses the emotional pain layer from Stage 2.</div></div>
+        <label class="lbl">What it does — one sentence</label>
+        <textarea class="sm" data-key="s3_does" placeholder="e.g. A WhatsApp-based compliance assistant that tells Irish landlords exactly what to do and when…"></textarea>
+        <label class="lbl">For whom — reference your Stage 2 persona exactly</label>
+        <textarea class="sm" data-key="s3_whom" placeholder="Use the persona name and specific context you built in Stage 2…"></textarea>
+        <label class="lbl">Why better than what they do today</label>
+        <textarea class="sm" data-key="s3_better" placeholder="The specific gap it closes vs the current workaround from Stage 2…"></textarea>
+        <label class="lbl">Value proposition formula</label>
+        <div class="vp-row">
+          <span class="vp-word">We help</span><input type="text" data-key="s3_vp_who" placeholder="[who]">
+          <span class="vp-word">achieve</span><input type="text" data-key="s3_vp_what" placeholder="[outcome]">
+          <span class="vp-word">by</span><input type="text" data-key="s3_vp_how" placeholder="[mechanism]">
+          <span class="vp-word">. Unlike</span><input type="text" data-key="s3_vp_unlike" placeholder="[alternative]">
+          <span class="vp-word">, we</span><input type="text" data-key="s3_vp_diff" placeholder="[key difference]">
+          <span class="vp-word">.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--green-dim)">🔧</div><div class="block-title">Prototype — Show, Don't Describe</div><div class="block-tag">Anything clickable counts</div></div>
+      <div class="block-body">
+        <div class="callout accent"><span class="ci">⚡</span><div><strong>Rule:</strong> If you can describe your solution without showing anything, your prototype isn't ready. A Figma mockup, landing page, wizard, or slide deck — anything that removes "imagine if…" from the conversation.</div></div>
+        <div class="g2">
+          <div class="cell"><div class="clbl">Prototype type</div>
+            <select data-key="s3_proto_type"><option value="">Select…</option><option>Landing page</option><option>Figma / clickable mockup</option><option>Lovable / no-code app</option><option>Wizard / form</option><option>Video demo</option><option>Physical prototype</option><option>Slide deck / PDF</option><option>Concierge (manual)</option></select></div>
+          <div class="cell"><div class="clbl">Tool used</div><input type="text" data-key="s3_proto_tool" placeholder="e.g. Lovable, Figma, Framer…"></div>
+        </div>
+        <label class="lbl">Prototype link</label>
+        <input type="text" data-key="s3_proto_link" placeholder="https://…">
+        <label class="lbl">The one question this prototype is designed to answer</label>
+        <textarea class="sm" data-key="s3_proto_q" placeholder="e.g. Do people immediately understand what this does — without me explaining it?"></textarea>
+        <label class="lbl">Success criteria — how will you know if the answer is yes?</label>
+        <textarea class="sm" data-key="s3_proto_success" placeholder="e.g. At least 4 of 5 people correctly describe the product without prompting…"></textarea>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--blue-dim)">📋</div><div class="block-title">Prototype Test Results</div><div class="block-tag">Say nothing — just observe</div></div>
+      <div class="block-body">
+        <div class="callout warn"><span class="ci">⚠</span><div>Show the prototype. Say "tell me what you think this does." Then be completely silent. Every second of hesitation is data.</div></div>
+        <div class="score-grid">
+          <div class="sc"><span class="semoji">✅</span><span class="slbl">Understood immediately</span><input type="number" data-key="s3_got" value="0" min="0"></div>
+          <div class="sc"><span class="semoji">😐</span><span class="slbl">Hesitated / re-read</span><input type="number" data-key="s3_hes" value="0" min="0"></div>
+          <div class="sc"><span class="semoji">❓</span><span class="slbl">Confused / asked what it is</span><input type="number" data-key="s3_conf" value="0" min="0"></div>
+        </div>
+        <label class="lbl">Most common point of confusion</label>
+        <textarea class="sm" data-key="s3_confusion" placeholder="The recurring question or hesitation across testers…"></textarea>
+        <label class="lbl">Most positive unprompted reaction</label>
+        <textarea class="sm" data-key="s3_positive" placeholder="A quote or behaviour that confirmed something…"></textarea>
+        <label class="lbl">What you changed in the prototype or concept as a result</label>
+        <textarea data-key="s3_changed" placeholder="List every change made — and why. If nothing changed, that's data too."></textarea>
+        <label class="lbl">Email signups or waitlist interest captured</label>
+        <input type="text" data-key="s3_signups" placeholder="e.g. 7 signups from the landing page — or 0">
+      </div>
+    </div>
+
+    <div class="checklist">
+      <div class="cl-hd">Stage 3 Checklist</div>
+      <div class="ci-row" id="cw-s3c1"><input type="checkbox" id="s3c1" data-key="s3c1" onchange="ck(this)"><label for="s3c1">Solution concept written — what it does, for whom, why better</label></div>
+      <div class="ci-row" id="cw-s3c2"><input type="checkbox" id="s3c2" data-key="s3c2" onchange="ck(this)"><label for="s3c2">Value proposition completed in full sentence</label></div>
+      <div class="ci-row" id="cw-s3c3"><input type="checkbox" id="s3c3" data-key="s3c3" onchange="ck(this)"><label for="s3c3">Prototype built and link recorded</label></div>
+      <div class="ci-row" id="cw-s3c4"><input type="checkbox" id="s3c4" data-key="s3c4" onchange="ck(this)"><label for="s3c4">Prototype shown to at least 5 real people silently</label></div>
+      <div class="ci-row" id="cw-s3c5"><input type="checkbox" id="s3c5" data-key="s3c5" onchange="ck(this)"><label for="s3c5">Reaction tally filled in</label></div>
+      <div class="ci-row" id="cw-s3c6"><input type="checkbox" id="s3c6" data-key="s3c6" onchange="ck(this)"><label for="s3c6">Prototype or concept updated based on feedback</label></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STAGE 4 ═══════════════ -->
+  <hr class="stage-divider" id="s4">
+  <div class="stage">
+    <div class="stage-header">
+      <div class="eyebrow">Stage 04 of 05</div>
+      <div class="stage-title">Stress-Test the <em>Business Model</em></div>
+      <div class="stage-desc">A great product with a broken business model is a hobby, not a startup. Stage 4 forces answers to the four hardest questions every investor will ask.</div>
+      <div class="stage-output">↳ Output: Lean Canvas · Unit economics · Competitive position · Unfair advantage</div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--accent-dim)">📦</div><div class="block-title">Lean Canvas — All 9 Blocks</div><div class="block-tag">Required: all blocks</div></div>
+      <div class="block-body">
+        <div class="callout bad"><span class="ci">🚨</span><div>Blocks marked <strong>HARD</strong> are where most teams are vague. Vague = dangerous. If you can't fill them with specifics, that's your biggest validation gap.</div></div>
+        <div class="canvas">
+          <div class="canvas-sec">Problem · Solution · Value</div>
+          <div class="crow c3">
+            <div class="ccell"><div class="cclbl">Problem — top 3 pains</div><textarea data-key="s4_problem" placeholder="1. …&#10;2. …&#10;3. …"></textarea></div>
+            <div class="ccell"><div class="cclbl">Solution — top 3 features</div><textarea data-key="s4_solution" placeholder="1. …&#10;2. …&#10;3. …"></textarea></div>
+            <div class="ccell"><div class="cclbl">Unique Value Prop <span class="hard">HARD</span></div><textarea data-key="s4_uvp" placeholder="Single clear message — not a tagline."></textarea></div>
+          </div>
+          <div class="canvas-sec">Go-to-Market</div>
+          <div class="crow c2">
+            <div class="ccell"><div class="cclbl">Customer Segments</div><textarea data-key="s4_segments" placeholder="Early adopters — specific. Not 'SMEs' but which type, size, location…"></textarea></div>
+            <div class="ccell"><div class="cclbl">Channels</div><textarea data-key="s4_channels" placeholder="Specific acquisition path — not 'social media'…"></textarea></div>
+          </div>
+          <div class="crow c2">
+            <div class="ccell"><div class="cclbl">Key Metrics <span class="hard">HARD</span></div><textarea data-key="s4_metrics" placeholder="The number that tells you something's broken before revenue does."></textarea></div>
+            <div class="ccell"><div class="cclbl">Unfair Advantage <span class="hard">HARD</span></div><textarea data-key="s4_advantage" placeholder="Not 'our team.' What makes it structurally hard to copy in 18 months?"></textarea></div>
+          </div>
+          <div class="canvas-sec">Economics</div>
+          <div class="crow c2">
+            <div class="ccell"><div class="cclbl">Cost Structure</div><textarea data-key="s4_costs" placeholder="Top 3–4 costs in order of size…"></textarea></div>
+            <div class="ccell"><div class="cclbl">Revenue Streams <span class="hard">HARD</span></div><textarea data-key="s4_revenue" placeholder="Who pays? How much? One-time or recurring? When?"></textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--green-dim)">💰</div><div class="block-title">Unit Economics</div><div class="block-tag">Be honest</div></div>
+      <div class="block-body">
+        <div class="g2">
+          <div class="cell"><div class="clbl">Price per customer / month (€)</div><input type="text" data-key="s4_price" placeholder="e.g. €49/month"></div>
+          <div class="cell"><div class="clbl">Customer Acquisition Cost — CAC</div><input type="text" data-key="s4_cac" placeholder="e.g. €120 via LinkedIn ads"></div>
+          <div class="cell"><div class="clbl">Avg. customer lifetime — months</div><input type="text" data-key="s4_ltv_m" placeholder="e.g. 18 months"></div>
+          <div class="cell hi"><div class="clbl">LTV / CAC ratio — target &gt;3×</div><input type="text" data-key="s4_ltv_cac" placeholder="e.g. (49 × 18) / 120 = 7.35×"></div>
+          <div class="cell span2"><div class="clbl">Payback period — months to recover CAC</div><input type="text" data-key="s4_payback" placeholder="e.g. €120 / €35 margin per month = 3.4 months"></div>
+        </div>
+        <label class="lbl">What needs to be true about your pricing for this to be a real business?</label>
+        <textarea data-key="s4_pricing_truth" placeholder="The conditions and assumptions behind the numbers above…"></textarea>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--blue-dim)">🗺</div><div class="block-title">Competitive Landscape</div><div class="block-tag">Honest analysis</div></div>
+      <div class="block-body">
+        <div class="callout info"><span class="ci">ℹ</span><div>"No competition" means you haven't looked hard enough, or the problem isn't real. Direct competitors, indirect alternatives, and the status quo all count.</div></div>
+        <div class="g2" style="margin-bottom:8px"><div class="cell"><div class="clbl">Competitor / Alternative 1</div><input type="text" data-key="s4_c1" placeholder="Name / description"></div><div class="cell"><div class="clbl">Their key weakness we exploit</div><input type="text" data-key="s4_c1g" placeholder="The gap we fill…"></div></div>
+        <div class="g2" style="margin-bottom:8px"><div class="cell"><div class="clbl">Competitor / Alternative 2</div><input type="text" data-key="s4_c2"></div><div class="cell"><div class="clbl">Their key weakness</div><input type="text" data-key="s4_c2g"></div></div>
+        <div class="g2" style="margin-bottom:8px"><div class="cell"><div class="clbl">Competitor / Alternative 3</div><input type="text" data-key="s4_c3"></div><div class="cell"><div class="clbl">Their key weakness</div><input type="text" data-key="s4_c3g"></div></div>
+        <label class="lbl">In one sentence — why would someone choose us over all of the above?</label>
+        <textarea class="sm" data-key="s4_why_us" placeholder="The honest answer — not the sales pitch…"></textarea>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--red-dim)">☠</div><div class="block-title">Business Model Assumption Inventory</div><div class="block-tag">Mark every claim</div></div>
+      <div class="block-body">
+        <div id="biz-table">
+          <div class="arow"><div class="ahd">We assume that…</div><div class="ahd">Canvas block</div><div class="ahd">Status</div><div class="ahd">Kill risk if wrong</div></div>
+          <div class="arow"><textarea class="sm" data-key="a1t" placeholder="We assume that…"></textarea><input type="text" data-key="a1b" placeholder="Block…"><select data-key="a1s"><option>? Uncertain</option><option>✓ Validated</option><option>✗ Untested</option></select><textarea class="sm" data-key="a1r" placeholder="If wrong…"></textarea></div>
+          <div class="arow"><textarea class="sm" data-key="a2t" placeholder="We assume that…"></textarea><input type="text" data-key="a2b" placeholder="Block…"><select data-key="a2s"><option>✗ Untested</option><option>✓ Validated</option><option>? Uncertain</option></select><textarea class="sm" data-key="a2r" placeholder="If wrong…"></textarea></div>
+          <div class="arow"><textarea class="sm" data-key="a3t" placeholder="We assume that…"></textarea><input type="text" data-key="a3b" placeholder="Block…"><select data-key="a3s"><option>? Uncertain</option><option>✓ Validated</option><option>✗ Untested</option></select><textarea class="sm" data-key="a3r" placeholder="If wrong…"></textarea></div>
+        </div>
+        <button class="add-btn" onclick="addAssume()">+ Add assumption</button>
+        <hr class="div">
+        <label class="lbl">☠ The single assumption that would kill the business if wrong</label>
+        <textarea class="sm" data-key="s4_killer" placeholder="State it plainly…"></textarea>
+        <label class="lbl">Fastest test for that assumption (anything over 1 week = over-engineered)</label>
+        <textarea class="sm" data-key="s4_killer_test" placeholder="e.g. Offer 5 interview participants a paid trial at €49 and see if anyone pays…"></textarea>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <div class="cl-hd">Stage 4 Checklist</div>
+      <div class="ci-row" id="cw-s4c1"><input type="checkbox" id="s4c1" data-key="s4c1" onchange="ck(this)"><label for="s4c1">Lean Canvas — all 9 blocks filled with specifics</label></div>
+      <div class="ci-row" id="cw-s4c2"><input type="checkbox" id="s4c2" data-key="s4c2" onchange="ck(this)"><label for="s4c2">Unit economics calculated — CAC, LTV, payback period</label></div>
+      <div class="ci-row" id="cw-s4c3"><input type="checkbox" id="s4c3" data-key="s4c3" onchange="ck(this)"><label for="s4c3">At least 3 real competitors or alternatives named</label></div>
+      <div class="ci-row" id="cw-s4c4"><input type="checkbox" id="s4c4" data-key="s4c4" onchange="ck(this)"><label for="s4c4">Unfair advantage defined — not "our passion"</label></div>
+      <div class="ci-row" id="cw-s4c5"><input type="checkbox" id="s4c5" data-key="s4c5" onchange="ck(this)"><label for="s4c5">Business model assumptions inventoried and marked</label></div>
+      <div class="ci-row" id="cw-s4c6"><input type="checkbox" id="s4c6" data-key="s4c6" onchange="ck(this)"><label for="s4c6">Killer assumption identified + fastest test defined</label></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STAGE 5 ═══════════════ -->
+  <hr class="stage-divider" id="s5">
+  <div class="stage">
+    <div class="stage-header">
+      <div class="eyebrow">Stage 05 of 05</div>
+      <div class="stage-title">Make the <em>Decision</em></div>
+      <div class="stage-desc">Validation is only useful if it forces a clear decision. What the evidence says, what you learned, and whether to build, pivot, or kill.</div>
+      <div class="stage-output">↳ Output: Evidence summary · Verdict (Go / Pivot / Kill) · Next 90 days</div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--accent-dim)">📊</div><div class="block-title">Evidence Summary</div><div class="block-tag">Across all 4 stages</div></div>
+      <div class="block-body">
+        <div class="g2">
+          <div class="cell good"><div class="clbl">✓ What the evidence confirms</div><textarea data-key="s5_confirms" placeholder="What you now know to be true — with evidence behind each point…"></textarea></div>
+          <div class="cell bad"><div class="clbl">✗ What remains unvalidated</div><textarea data-key="s5_unvalidated" placeholder="What you still don't know — be honest…"></textarea></div>
+          <div class="cell"><div class="clbl">The biggest surprise across all stages</div><textarea data-key="s5_surprise" placeholder="The thing you were most wrong about…"></textarea></div>
+          <div class="cell hi"><div class="clbl">The strongest signal in favour of building</div><textarea data-key="s5_signal" placeholder="The one piece of evidence that makes you want to continue…"></textarea></div>
+        </div>
+        <hr class="div">
+        <div style="font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:10px">What changed from your Stage 1 assumptions</div>
+        <div id="learn-log">
+          <div class="ev-row"><textarea class="sm" data-key="l1a" placeholder="We assumed…"></textarea><div class="ev-arr">→</div><textarea class="sm" data-key="l1f" placeholder="We found…"></textarea></div>
+          <div class="ev-row"><textarea class="sm" data-key="l2a" placeholder="We assumed…"></textarea><div class="ev-arr">→</div><textarea class="sm" data-key="l2f" placeholder="We found…"></textarea></div>
+          <div class="ev-row"><textarea class="sm" data-key="l3a" placeholder="We assumed…"></textarea><div class="ev-arr">→</div><textarea class="sm" data-key="l3f" placeholder="We found…"></textarea></div>
+        </div>
+        <button class="add-btn" onclick="addLearning()">+ Add learning</button>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--blue-dim)">🏁</div><div class="block-title">Validation Scorecard</div><div class="block-tag">Rate each dimension</div></div>
+      <div class="block-body">
+        <div class="g2">
+          <div class="cell"><div class="clbl">Problem is real &amp; frequent (Stage 1)</div><select data-key="sc_problem" onchange="updateScore()"><option value="">Not assessed</option><option value="3">✓✓ Strong evidence</option><option value="2">✓ Some evidence</option><option value="1">? Mixed signals</option><option value="0">✗ Weak / absent</option></select></div>
+          <div class="cell"><div class="clbl">Customers confirmed in interviews (Stage 2)</div><select data-key="sc_customer" onchange="updateScore()"><option value="">Not assessed</option><option value="3">✓✓ Strong evidence</option><option value="2">✓ Some evidence</option><option value="1">? Mixed signals</option><option value="0">✗ Weak / absent</option></select></div>
+          <div class="cell"><div class="clbl">Prototype understood &amp; desired (Stage 3)</div><select data-key="sc_solution" onchange="updateScore()"><option value="">Not assessed</option><option value="3">✓✓ Strong evidence</option><option value="2">✓ Some evidence</option><option value="1">? Mixed signals</option><option value="0">✗ Weak / absent</option></select></div>
+          <div class="cell"><div class="clbl">Business model makes sense (Stage 4)</div><select data-key="sc_biz" onchange="updateScore()"><option value="">Not assessed</option><option value="3">✓✓ Strong evidence</option><option value="2">✓ Some evidence</option><option value="1">? Mixed signals</option><option value="0">✗ Weak / absent</option></select></div>
+          <div class="cell hi span2" style="padding:14px">
+            <div style="font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:5px">Overall validation score</div>
+            <div style="font-family:var(--fd);font-size:28px;font-weight:800;color:var(--accent)" id="tscore">—</div>
+            <div style="font-family:var(--fm);font-size:11px;color:var(--dim);margin-top:2px" id="tslabel">Score all 4 dimensions above</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--accent-dim)">⚖</div><div class="block-title">Verdict — What Are You Going to Do?</div><div class="block-tag">Pick one. Commit.</div></div>
+      <div class="block-body">
+        <div class="verdict-grid">
+          <div class="vcell" id="v-go" onclick="setVerdict('go')"><span class="vi">🚀</span><span class="vl" style="color:var(--green)">GO</span><span class="vd">Evidence supports building. Move to MVP. Identify first 10 paying customers.</span></div>
+          <div class="vcell" id="v-pivot" onclick="setVerdict('pivot')"><span class="vi">🔄</span><span class="vl" style="color:var(--orange)">PIVOT</span><span class="vd">Core insight is valuable but something fundamental needs to change.</span></div>
+          <div class="vcell" id="v-kill" onclick="setVerdict('kill')"><span class="vi">🛑</span><span class="vl" style="color:var(--red)">KILL</span><span class="vd">Evidence doesn't support this idea. Stop — it's cheaper than building the wrong thing.</span></div>
+        </div>
+        <input type="hidden" data-key="s5_verdict" id="verdict-val">
+        <div id="verdict-detail" style="display:none;margin-top:14px">
+          <label class="lbl">Reason for this verdict — in plain language</label>
+          <textarea data-key="s5_reason" placeholder="The honest 2–3 sentence explanation of why you made this call…"></textarea>
+          <div id="go-sec"><label class="lbl">3 conditions that must remain true for this to stay a GO</label><textarea data-key="s5_go_cond" placeholder="1. …&#10;2. …&#10;3. …"></textarea></div>
+          <div id="pivot-sec" style="display:none"><label class="lbl">What specifically are you pivoting?</label><select data-key="s5_pivot_what"><option value="">Select…</option><option>Customer segment</option><option>Problem</option><option>Solution</option><option>Business model</option><option>Channel</option></select><label class="lbl">Describe the pivot in one sentence</label><textarea class="sm" data-key="s5_pivot_desc" placeholder="Instead of X, we will now Y because the evidence showed Z…"></textarea></div>
+          <div id="kill-sec" style="display:none"><label class="lbl">The specific evidence that killed this idea</label><textarea data-key="s5_kill_ev" placeholder="What you learned that made continuing unjustifiable…"></textarea><label class="lbl">What you'll apply to the next idea</label><textarea data-key="s5_kill_learn" placeholder="The most valuable insight from this validation cycle…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd"><div class="block-icon" style="background:var(--green-dim)">📅</div><div class="block-title">Next 90 Days</div><div class="block-tag">Concrete · Dated · Measurable</div></div>
+      <div class="block-body">
+        <div class="callout accent"><span class="ci">⚡</span><div>Not "grow users." Specific, dated, measurable milestones. If you can't name the first paying customer target, you're not ready to build.</div></div>
+        <div class="g3">
+          <div class="cell"><div class="clbl">Month 1 — milestone</div><textarea data-key="s5_m1" placeholder="e.g. Ship MVP to 10 beta users. Collect NPS weekly."></textarea></div>
+          <div class="cell"><div class="clbl">Month 2 — milestone</div><textarea data-key="s5_m2" placeholder="e.g. Convert 3 beta users to paid (€49/mo)."></textarea></div>
+          <div class="cell"><div class="clbl">Month 3 — milestone</div><textarea data-key="s5_m3" placeholder="e.g. Reach €1,000 MRR."></textarea></div>
+        </div>
+        <label class="lbl">First 3 people / companies you will call tomorrow morning</label>
+        <textarea class="sm" data-key="s5_calls" placeholder="1. Name — why them — how you'll reach them&#10;2. …&#10;3. …"></textarea>
+        <label class="lbl">The single metric that tells you in 30 days whether this is working</label>
+        <input type="text" data-key="s5_north_star" placeholder="e.g. ≥ 3 paying customers at €49/month within 30 days of launch">
+      </div>
+    </div>
+
+    <div class="checklist">
+      <div class="cl-hd">Stage 5 Checklist</div>
+      <div class="ci-row" id="cw-s5c1"><input type="checkbox" id="s5c1" data-key="s5c1" onchange="ck(this)"><label for="s5c1">Evidence summary written — confirms and unknowns</label></div>
+      <div class="ci-row" id="cw-s5c2"><input type="checkbox" id="s5c2" data-key="s5c2" onchange="ck(this)"><label for="s5c2">All 4 dimensions scored on the validation scorecard</label></div>
+      <div class="ci-row" id="cw-s5c3"><input type="checkbox" id="s5c3" data-key="s5c3" onchange="ck(this)"><label for="s5c3">Learning log — at least 3 "we assumed → we found" entries</label></div>
+      <div class="ci-row" id="cw-s5c4"><input type="checkbox" id="s5c4" data-key="s5c4" onchange="ck(this)"><label for="s5c4">Verdict chosen — Go / Pivot / Kill</label></div>
+      <div class="ci-row" id="cw-s5c5"><input type="checkbox" id="s5c5" data-key="s5c5" onchange="ck(this)"><label for="s5c5">Verdict reason written in plain language</label></div>
+      <div class="ci-row" id="cw-s5c6"><input type="checkbox" id="s5c6" data-key="s5c6" onchange="ck(this)"><label for="s5c6">Next 90-day milestones written — specific and dated</label></div>
+      <div class="ci-row" id="cw-s5c7"><input type="checkbox" id="s5c7" data-key="s5c7" onchange="ck(this)"><label for="s5c7">First 3 calls identified for tomorrow</label></div>
+      <div class="ci-row" id="cw-s5c8"><input type="checkbox" id="s5c8" data-key="s5c8" onchange="ck(this)"><label for="s5c8">North star metric defined</label></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- MODALS -->
+<div class="overlay" id="clear-modal">
+  <div class="modal">
+    <h3>Clear all data</h3>
+    <p>This will permanently erase everything. Save a file first if you need a backup.</p>
+    <div class="modal-btns"><button class="mbtn" onclick="hideModals()">Cancel</button><button class="mbtn bad" onclick="clearAll()">Yes, clear everything</button></div>
+  </div>
+</div>
+<div class="overlay" id="load-modal">
+  <div class="modal">
+    <h3>Load saved file</h3>
+    <p>Select a previously saved .json file. This will overwrite all current data.</p>
+    <input type="file" accept=".json" id="load-input" style="margin-bottom:16px;color:var(--muted);font-size:12px">
+    <div class="modal-btns"><button class="mbtn" onclick="hideModals()">Cancel</button><button class="mbtn acc" onclick="loadFile()">Load &amp; Overwrite</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SK='ivt_v2';
+const gs=()=>{try{return JSON.parse(localStorage.getItem(SK))||{};}catch{return{};}};
+const ss=d=>localStorage.setItem(SK,JSON.stringify(d));
+
+function init(){
+  const data=gs();
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const k=el.dataset.key;
+    if(data[k]!==undefined){
+      if(el.type==='checkbox'){el.checked=!!data[k];const w=document.getElementById('cw-'+k);if(w&&data[k])w.classList.add('done');}
+      else el.value=data[k];
+    }
+    const save=()=>{const d=gs();d[el.dataset.key]=el.type==='checkbox'?el.checked:el.value;ss(d);prog();};
+    el.addEventListener('input',save);
+    el.addEventListener('change',save);
+  });
+  hmw();updateSignal();updateScore();restoreVerdict();prog();
+  const q=gs()['s2_quote'];if(q)updateQuote(q);
+}
+
+function prog(){
+  const data=gs(),all=document.querySelectorAll('[data-key]');
+  let filled=0;
+  all.forEach(el=>{const v=data[el.dataset.key];if(v&&v!==''&&v!==false&&v!=='0'&&v!==0)filled++;});
+  const f=document.getElementById('pf');if(f)f.style.width=Math.min(100,Math.round(filled/Math.max(all.length,1)*100))+'%';
+}
+
+function ck(el){
+  const d=gs();d[el.dataset.key]=el.checked;ss(d);
+  const w=document.getElementById('cw-'+el.dataset.key);if(w)w.classList.toggle('done',el.checked);
+  prog();
+}
+
+function hmw(){
+  const d=gs(),v=k=>(d[k]||'').trim()||'___',e=id=>document.getElementById(id);
+  if(e('p-who'))e('p-who').textContent=v('s1_hmw_who');
+  if(e('p-goal'))e('p-goal').textContent=v('s1_hmw_goal');
+  if(e('p-obs'))e('p-obs').textContent=v('s1_hmw_obstacle');
+  if(e('p-ctx'))e('p-ctx').textContent=v('s1_hmw_context');
+}
+document.addEventListener('input',e=>{if(e.target.dataset.key?.startsWith('s1_hmw_'))hmw();});
+
+function updateSignal(){
+  const d=gs(),f=parseFloat(d.s1_felt)||0,q=parseFloat(d.s1_freq)||0,c=parseFloat(d.s1_cost)||0;
+  const avg=(f+q+c)/3,pct=(avg/10)*100;
+  const fill=document.getElementById('sfill'),lbl=document.getElementById('slabel');
+  if(fill)fill.style.width=pct+'%';
+  if(lbl){
+    if(!f&&!q&&!c){lbl.textContent='Fill in all three scores above';return;}
+    if(avg>=8)lbl.textContent=`Strong signal — avg ${avg.toFixed(1)}/10 · Worth pursuing`;
+    else if(avg>=6)lbl.textContent=`Moderate signal — avg ${avg.toFixed(1)}/10 · Refine the problem scope`;
+    else lbl.textContent=`Weak signal — avg ${avg.toFixed(1)}/10 · Consider a different problem`;
+  }
+}
+
+function updateQuote(val){
+  const el=document.getElementById('pquote');if(!el)return;
+  el.textContent=val?`"${val}"`:'"\u2026"';el.style.color=val?'var(--text)':'var(--dim)';
+}
+
+function updateScore(){
+  const d=gs(),keys=['sc_problem','sc_customer','sc_solution','sc_biz'];
+  let total=0,filled=0;
+  keys.forEach(k=>{const v=d[k];if(v!==undefined&&v!==''){total+=parseInt(v);filled++;}});
+  const el=document.getElementById('tscore'),lbl=document.getElementById('tslabel');
+  if(!el)return;
+  if(filled<4){el.textContent='—';if(lbl)lbl.textContent=`${filled}/4 dimensions scored`;return;}
+  el.textContent=`${total} / 12`;
+  if(lbl){
+    if(total>=10)lbl.textContent='Strong validation — evidence supports a GO decision';
+    else if(total>=7)lbl.textContent='Moderate validation — some gaps remain before GO';
+    else if(total>=4)lbl.textContent='Weak validation — significant unknowns — consider pivot';
+    else lbl.textContent='Very weak — evidence does not support building this now';
+  }
+}
+document.addEventListener('change',e=>{if(e.target.dataset.key?.startsWith('sc_'))updateScore();});
+
+function setVerdict(v){
+  ['go','pivot','kill'].forEach(x=>document.getElementById('v-'+x)?.classList.remove('sel-go','sel-pivot','sel-kill'));
+  document.getElementById('v-'+v)?.classList.add('sel-'+v);
+  document.getElementById('verdict-val').value=v;
+  const d=gs();d.s5_verdict=v;ss(d);
+  const det=document.getElementById('verdict-detail');if(det)det.style.display='block';
+  ['go','pivot','kill'].forEach(x=>{const s=document.getElementById(x+'-sec');if(s)s.style.display=x===v?'block':'none';});
+}
+function restoreVerdict(){const v=gs().s5_verdict;if(v)setVerdict(v);}
+
+let intC=3;
+function addInterview(){
+  intC++;const n=intC,list=document.getElementById('int-list');
+  const card=document.createElement('div');card.className='int-card';
+  card.innerHTML=`<div class="int-hd"><span>Interview 0${n}</span></div><div class="int-body">
+    <div class="g2"><div><label class="lbl" style="margin-top:0">Who</label><input type="text" data-key="i${n}_who"></div><div><label class="lbl" style="margin-top:0">How reached</label><input type="text" data-key="i${n}_method"></div></div>
+    <label class="lbl">Most surprising</label><textarea class="sm" data-key="i${n}_surprise"></textarea>
+    <label class="lbl">Have the problem?</label><textarea class="sm" data-key="i${n}_problem"></textarea>
+    <label class="lbl">Today's workaround</label><textarea class="sm" data-key="i${n}_today"></textarea>
+    <label class="lbl">Key insight</label><textarea class="sm" data-key="i${n}_insight"></textarea>
+  </div>`;
+  list.appendChild(card);
+  card.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{const d=gs();d[el.dataset.key]=el.value;ss(d);}));
+}
+
+let azC=3;
+function addAssume(){
+  azC++;const n=azC,t=document.getElementById('biz-table');
+  const row=document.createElement('div');row.className='arow';
+  row.innerHTML=`<textarea class="sm" data-key="a${n}t" placeholder="We assume that…"></textarea><input type="text" data-key="a${n}b" placeholder="Block…"><select data-key="a${n}s"><option>? Uncertain</option><option>✓ Validated</option><option>✗ Untested</option></select><textarea class="sm" data-key="a${n}r" placeholder="If wrong…"></textarea>`;
+  t.appendChild(row);
+  row.querySelectorAll('[data-key]').forEach(el=>{el.addEventListener('input',()=>{const d=gs();d[el.dataset.key]=el.value;ss(d);});el.addEventListener('change',()=>{const d=gs();d[el.dataset.key]=el.value;ss(d);});});
+}
+
+let lC=3;
+function addLearning(){
+  lC++;const n=lC,log=document.getElementById('learn-log');
+  const row=document.createElement('div');row.className='ev-row';
+  row.innerHTML=`<textarea class="sm" data-key="l${n}a" placeholder="We assumed…"></textarea><div class="ev-arr">→</div><textarea class="sm" data-key="l${n}f" placeholder="We found…"></textarea>`;
+  log.appendChild(row);
+  row.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{const d=gs();d[el.dataset.key]=el.value;ss(d);}));
+}
+
+function saveFile(){
+  const blob=new Blob([JSON.stringify(gs(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='idea-validation.json';a.click();
+  toast('✓ Saved');
+}
+function showLoadModal(){document.getElementById('load-modal').classList.add('show');}
+function loadFile(){
+  const f=document.getElementById('load-input').files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>{try{ss(JSON.parse(e.target.result));hideModals();init();toast('✓ Loaded');}catch{toast('⚠ Invalid file');}};r.readAsText(f);
+}
+function copyText(){
+  const lines=Object.entries(gs()).filter(([k,v])=>v&&v!==false).map(([k,v])=>`${k}: ${v}`).join('\n');
+  navigator.clipboard.writeText(lines).then(()=>toast('✓ Copied'));
+}
+function showClearModal(){document.getElementById('clear-modal').classList.add('show');}
+function clearAll(){
+  localStorage.removeItem(SK);hideModals();
+  document.querySelectorAll('[data-key]').forEach(el=>{if(el.type==='checkbox')el.checked=false;else if(el.type==='number')el.value=0;else el.value='';const w=document.getElementById('cw-'+el.dataset.key);if(w)w.classList.remove('done');});
+  prog();toast('✓ Cleared');
+}
+function hideModals(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+document.addEventListener('DOMContentLoaded',init);
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)hideModals();}));
+</script>
+</body>
+</html>
