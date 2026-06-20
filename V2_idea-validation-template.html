@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Validation Roadmap</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ── TOKENS ── */
+:root {
+  --bg: #f5f2ed;
+  --ink: #111010;
+  --ink-2: #3a3835;
+  --ink-3: #7a7672;
+  --rule: #d8d4ce;
+  --surface: #ffffff;
+  --surface-2: #eceae5;
+  --red: #c0392b;
+  --red-bg: #fdf0ee;
+  --amber: #b45309;
+  --amber-bg: #fef8ee;
+  --green: #1a6b3a;
+  --green-bg: #edf7f1;
+  --blue: #1e4fa8;
+  --blue-bg: #eef3fc;
+  --accent-inv: #f5f2ed;
+  --font-head: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-head);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── PRINT BUTTON (screen only) ── */
+.print-bar {
+  background: var(--ink);
+  padding: 10px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.print-bar-msg {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(245,242,237,.45);
+}
+.print-btn {
+  font-family: var(--font-head);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 20px;
+  background: #e8ff47;
+  color: #111010;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: .01em;
+}
+.print-btn:hover { background: #d4eb40; }
+
+/* ── COVER / HEADER ── */
+.site-header {
+  background: var(--ink);
+  color: var(--accent-inv);
+  padding: 52px 56px 44px;
+}
+.header-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(245,242,237,.4);
+  margin-bottom: 18px;
+}
+.header-title {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -.035em;
+  line-height: 1.0;
+  margin-bottom: 16px;
+}
+.header-title em { font-style: normal; color: #e8ff47; }
+.header-sub {
+  font-size: 14px;
+  color: rgba(245,242,237,.6);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+.header-meta {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+.meta-item {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: rgba(245,242,237,.3);
+  text-transform: uppercase;
+}
+.meta-item strong {
+  color: rgba(245,242,237,.8);
+  display: block;
+  font-size: 14px;
+  letter-spacing: normal;
+  text-transform: none;
+  font-family: var(--font-head);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ── IDEA NAME FIELD ── */
+.idea-field-wrap {
+  background: var(--ink);
+  padding: 0 56px 44px;
+}
+.idea-field-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(245,242,237,.35);
+  margin-bottom: 8px;
+  display: block;
+}
+.idea-field-input {
+  width: 100%;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 5px;
+  padding: 14px 18px;
+  font-family: var(--font-head);
+  font-size: 18px;
+  font-weight: 600;
+  color: #f5f2ed;
+  outline: none;
+  letter-spacing: -.01em;
+}
+.idea-field-input::placeholder { color: rgba(245,242,237,.2); }
+.idea-field-input:focus { border-color: rgba(232,255,71,.5); }
+
+/* ── PAGE WRAPPER ── */
+.page-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 0 80px;
+}
+
+/* ── PHASE DIVIDER ── */
+.phase-divider {
+  background: var(--ink);
+  color: var(--accent-inv);
+  padding: 32px 56px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 48px;
+}
+.pd-left { flex: 1; }
+.pd-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  background: rgba(232,255,71,.15);
+  color: #e8ff47;
+  padding: 4px 10px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.pd-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 6px;
+}
+.pd-desc {
+  font-size: 13px;
+  color: rgba(245,242,237,.5);
+  line-height: 1.6;
+  max-width: 460px;
+}
+.pd-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  flex: none;
+}
+.pd-step-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(245,242,237,.3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+/* ── STEP SECTION ── */
+.step-section {
+  padding: 44px 56px 0;
+}
+.step-section + .step-section {
+  padding-top: 40px;
+  border-top: 1px solid var(--rule);
+  margin-top: 40px;
+}
+
+.step-header {
+  margin-bottom: 32px;
+  padding-bottom: 22px;
+  border-bottom: 2px solid var(--ink);
+}
+.step-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-num-badge { font-weight: 700; color: var(--ink); }
+.step-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 10px;
+  line-height: 1.15;
+}
+.step-objective {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* ── BLOCK ── */
+.block { margin-bottom: 28px; }
+.block-title {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.block-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* ── WARNING BOX ── */
+.warning-box {
+  background: var(--red-bg);
+  border: 1px solid rgba(192,57,43,.18);
+  border-left: 3px solid var(--red);
+  border-radius: 5px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--red);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.warning-box strong {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+/* ── QUESTION + ANSWER ROWS ── */
+.qa-list { list-style: none; display: flex; flex-direction: column; }
+.qa-item {
+  border-bottom: 1px solid var(--rule);
+  padding: 16px 0 14px;
+}
+.qa-item:last-child { border-bottom: none; }
+.qa-question {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.q-icon {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-3);
+  flex: none;
+  padding-top: 2px;
+}
+.qa-answer {
+  width: 100%;
+  min-height: 64px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 10px 13px;
+  font-family: var(--font-head);
+  font-size: 13px;
+  color: var(--ink);
+  resize: vertical;
+  outline: none;
+  line-height: 1.55;
+  transition: border-color .15s;
+}
+.qa-answer:focus { border-color: var(--ink-3); }
+.qa-answer::placeholder { color: var(--rule); font-style: italic; }
+
+/* ── CHECKLIST ── */
+.checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  user-select: none;
+  transition: background .1s, border-color .1s;
+}
+.check-item:hover { background: var(--surface-2); }
+.check-item.checked {
+  background: var(--green-bg);
+  border-color: rgba(26,107,58,.25);
+  color: var(--green);
+  text-decoration: line-through;
+  text-decoration-color: rgba(26,107,58,.4);
+}
+.check-box {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--rule);
+  border-radius: 3px;
+  flex: none;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .1s, border-color .1s;
+}
+.check-item.checked .check-box { background: var(--green); border-color: var(--green); }
+.check-mark { color: white; font-size: 10px; font-weight: 700; }
+
+/* ── CRITERIA GRID ── */
+.criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.criterion {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 13px 15px;
+}
+.criterion-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 5px;
+}
+.criterion-text { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+
+/* ── DECISION GATE ── */
+.gate {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+.gate-card {
+  border-radius: 5px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.gate-card.proceed { background: var(--green-bg); border: 1px solid rgba(26,107,58,.25); color: var(--green); }
+.gate-card.pivot   { background: var(--amber-bg); border: 1px solid rgba(180,83,9,.25);  color: var(--amber); }
+.gate-card.discard { background: var(--red-bg);   border: 1px solid rgba(192,57,43,.25); color: var(--red);   }
+.gate-card.improve { background: var(--blue-bg);  border: 1px solid rgba(30,79,168,.25); color: var(--blue);  }
+.gate-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ── SCORECARD ── */
+.scorecard { display: flex; flex-direction: column; gap: 8px; }
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 12px 14px;
+}
+.score-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-3);
+  flex: none;
+  width: 22px;
+}
+.score-label { flex: 1; font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+.score-label small { display: block; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.score-input {
+  width: 52px;
+  height: 36px;
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  flex: none;
+  transition: border-color .15s;
+}
+.score-input:focus { border-color: var(--ink); }
+.score-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--ink);
+  color: var(--accent-inv);
+  border-radius: 5px;
+  margin-top: 4px;
+}
+.score-total-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.score-total-val {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: #e8ff47;
+}
+
+/* ── VERDICT FIELD ── */
+.verdict-block {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 20px;
+  margin-top: 12px;
+}
+.verdict-block label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: block;
+  margin-bottom: 8px;
+}
+.verdict-textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 10px 13px;
+  font-family: var(--font-head);
+  font-size: 13px;
+  color: var(--ink);
+  resize: vertical;
+  outline: none;
+  background: var(--bg);
+  line-height: 1.55;
+}
+.verdict-textarea:focus { border-color: var(--ink-3); }
+.verdict-radios {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.verdict-radio {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink-3);
+  transition: all .12s;
+}
+.verdict-radio input { display: none; }
+.verdict-radio:has(input:checked).go     { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+.verdict-radio:has(input:checked).cgo   { background: var(--blue-bg);  border-color: var(--blue);  color: var(--blue); }
+.verdict-radio:has(input:checked).pivot { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
+.verdict-radio:has(input:checked).kill  { background: var(--red-bg);   border-color: var(--red);   color: var(--red); }
+
+/* ── PROGRESS BAR (screen only) ── */
+.progress-strip {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 56px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 44px;
+  z-index: 100;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+}
+.prog-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.prog-track {
+  flex: 1;
+  height: 3px;
+  background: var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: var(--ink);
+  border-radius: 2px;
+  width: 0%;
+  transition: width .3s ease;
+}
+.prog-pct {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 34px;
+  text-align: right;
+}
+
+/* ── MILESTONES TABLE ── */
+.milestones {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+}
+.milestones th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+}
+.milestones td {
+  padding: 0;
+  border: 1px solid var(--rule);
+  vertical-align: top;
+}
+.milestones td input {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: var(--surface);
+  font-family: var(--font-head);
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+}
+.milestones td input:focus { background: var(--surface-2); }
+
+
+/* ════════════════════════════
+   PRINT STYLES
+   ════════════════════════════ */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 16mm 18mm;
+  }
+
+  /* Hide screen-only chrome */
+  .print-bar,
+  .progress-strip { display: none !important; }
+
+  body {
+    background: #fff;
+    font-size: 10.5pt;
+    color: #111;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Header fills first page block */
+  .site-header {
+    background: #111 !important;
+    color: #f5f2ed !important;
+    padding: 36pt 40pt 28pt !important;
+    page-break-after: avoid;
+  }
+  .header-title { font-size: 32pt !important; }
+  .idea-field-wrap {
+    background: #111 !important;
+    padding: 0 40pt 28pt !important;
+  }
+  .idea-field-input {
+    border-color: rgba(255,255,255,.25) !important;
+    font-size: 14pt !important;
+  }
+
+  .page-wrap { max-width: 100%; }
+
+  /* Phase dividers start new pages */
+  .phase-divider {
+    page-break-before: always;
+    background: #111 !important;
+    color: #f5f2ed !important;
+    padding: 24pt 40pt !important;
+    margin-top: 0 !important;
+  }
+  .pd-badge { color: #e8ff47 !important; }
+
+  /* Steps: avoid breaking inside header */
+  .step-section {
+    padding: 28pt 40pt 0 !important;
+    page-break-inside: avoid;
+  }
+  .step-section + .step-section {
+    padding-top: 24pt !important;
+    margin-top: 24pt !important;
+  }
+  .step-header { page-break-after: avoid; }
+  .step-title { font-size: 18pt !important; }
+
+  /* Let content flow naturally but try not to orphan blocks */
+  .block { page-break-inside: avoid; margin-bottom: 18pt !important; }
+  .block-title { margin-bottom: 8pt !important; }
+
+  /* QA items: keep question + textarea together */
+  .qa-item { page-break-inside: avoid; }
+  .qa-answer {
+    min-height: 52pt !important;
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    resize: none;
+    font-size: 10pt !important;
+  }
+
+  /* Checklist */
+  .check-item {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    padding: 7pt 10pt !important;
+    page-break-inside: avoid;
+  }
+  .check-item.checked {
+    background: #edf7f1 !important;
+    border-color: rgba(26,107,58,.25) !important;
+  }
+
+  /* Criteria grid: 2 columns on print */
+  .criteria-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 7pt !important;
+  }
+  .criterion { background: #fff !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+
+  /* Gate cards: 2 columns */
+  .gate {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6pt !important;
+  }
+  .gate-card { page-break-inside: avoid; }
+  .gate-card.proceed { background: #edf7f1 !important; }
+  .gate-card.pivot   { background: #fef8ee !important; }
+  .gate-card.discard { background: #fdf0ee !important; }
+  .gate-card.improve { background: #eef3fc !important; }
+
+  /* Warning box */
+  .warning-box { background: #fdf0ee !important; page-break-inside: avoid; }
+
+  /* Scorecard */
+  .score-row { background: #fff !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
+  .score-total-row { background: #111 !important; color: #f5f2ed !important; }
+  .score-input { background: #f5f2ed !important; }
+
+  /* Verdict */
+  .verdict-block { background: #fff !important; border: 1px solid #ccc !important; }
+  .verdict-textarea { background: #fff !important; border: 1px solid #ccc !important; }
+  .verdict-radio { border: 1px solid #ccc !important; background: #fff !important; }
+  .verdict-radio:has(input:checked).go    { background: #edf7f1 !important; border-color: #1a6b3a !important; color: #1a6b3a !important; }
+  .verdict-radio:has(input:checked).cgo  { background: #eef3fc !important; border-color: #1e4fa8 !important; color: #1e4fa8 !important; }
+  .verdict-radio:has(input:checked).pivot{ background: #fef8ee !important; border-color: #b45309 !important; color: #b45309 !important; }
+  .verdict-radio:has(input:checked).kill { background: #fdf0ee !important; border-color: #c0392b !important; color: #c0392b !important; }
+
+  /* Milestones */
+  .milestones th { background: #eceae5 !important; }
+  .milestones td input { background: #fff !important; }
+
+  /* Suppress button text */
+  .print-btn { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- SCREEN-ONLY PRINT BAR -->
+<div class="print-bar">
+  <span class="print-bar-msg">Fill in your answers, then print or save as PDF</span>
+  <button class="print-btn" onclick="window.print()">🖨 Print / Save as PDF</button>
+</div>
+
+<!-- PROGRESS BAR (screen only) -->
+<div class="progress-strip">
+  <span class="prog-label">Checklist Progress</span>
+  <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+  <span class="prog-pct" id="progPct">0%</span>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-eyebrow">Idea → Evidence → Decision</div>
+  <h1 class="header-title">Idea Validation<br><em>Roadmap</em></h1>
+  <p class="header-sub">A phased, gate-driven framework for stress-testing any startup, product, or project idea. Every stage demands evidence over assumption. Every gate demands a decision.</p>
+  <div class="header-meta">
+    <div class="meta-item">Phases<strong>4</strong></div>
+    <div class="meta-item">Steps<strong>12</strong></div>
+    <div class="meta-item">Decision Gates<strong>12</strong></div>
+    <div class="meta-item">Approach<strong>Kill Fast · Build Right</strong></div>
+  </div>
+</header>
+
+<!-- IDEA NAME FIELD -->
+<div class="idea-field-wrap">
+  <label class="idea-field-label">Idea / Project Name</label>
+  <input class="idea-field-input" type="text" placeholder="e.g. SaaS tool for freelance accountants to automate client onboarding…">
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <!-- ════════════════ PHASE 1 ════════════════ -->
+  <div class="phase-divider">
+    <div class="pd-left">
+      <div class="pd-badge">Phase 01 · Discovery</div>
+      <div class="pd-title">Problem First. Idea Second.</div>
+      <div class="pd-desc">Most ideas die because they're solutions looking for problems. Phase 1 forces you to define the problem with surgical precision before touching a solution.</div>
+    </div>
+    <div class="pd-steps">
+      <div class="pd-step-tag">Step 01 · Idea Capture</div>
+      <div class="pd-step-tag">Step 02 · Problem Clarity</div>
+      <div class="pd-step-tag">Step 03 · Customer ID</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 01 / 12</span> · Idea Capture &amp; Problem Identification</div>
+      <h2 class="step-title">Capture the raw idea and trace it back to a real problem</h2>
+      <p class="step-objective">Turn a vague concept into a falsifiable problem statement. The goal is not to validate your idea — it's to identify exactly what pain or inefficiency you believe exists, and why you believe it.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the exact problem you are solving? Write it in one sentence without mentioning your solution.</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who experiences this problem and how often? Daily friction vs. rare edge case?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>How do people currently cope with this problem? What workarounds exist?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Why does this problem exist? Is it systemic, behavioural, technological, or regulatory?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the cost of the problem not being solved — time, money, stress, missed opportunity?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Why are you specifically interested in this problem? Do you have an unfair advantage here?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Is this problem getting worse over time, staying the same, or fading away?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Write a single problem statement: "I notice that [WHO] struggle to [DO WHAT] because [ROOT CAUSE], which results in [CONSEQUENCE]."</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>List all assumptions baked into that statement — explicitly name them.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify 3–5 real people who might have this problem. Do not use friends unless they are genuine target users.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Conduct 3 informal "problem conversations" — ask about the pain, not your solution. Record verbatim responses.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Search forums (Reddit, Quora, LinkedIn, industry forums) for complaints or workarounds related to this problem.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Rate the problem on 3 axes: Frequency (how often), Severity (how bad), Urgency (how badly people want it solved now).</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Problem Statement</div><div class="criterion-text">You can write one clean sentence describing the problem without mentioning your solution.</div></div>
+        <div class="criterion"><div class="criterion-label">Problem Confirmed</div><div class="criterion-text">At least 2 of 3 real people confirmed the problem exists in their own words.</div></div>
+        <div class="criterion"><div class="criterion-label">Real Cost Exists</div><div class="criterion-text">The problem has a quantifiable cost: time, money, missed outcome, or emotional burden.</div></div>
+        <div class="criterion"><div class="criterion-label">Evidence Online</div><div class="criterion-text">Forum threads or reviews show strangers complaining about this without being prompted.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>Problem is real, confirmed by multiple independent sources, and has measurable cost.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Problem exists but framing is too vague or broad — tighten the scope.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>People describe a different, adjacent problem. Follow their words, not your assumptions.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>Nobody confirmed the problem. Your evidence is 100% self-generated. Start over.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 2 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 02 / 12</span> · Problem Clarity</div>
+      <h2 class="step-title">Sharpen the problem until it can't be misread</h2>
+      <p class="step-objective">Most founders are solving a symptom, not a root cause. This step forces you to dig deeper with structured analysis until you understand exactly what you're dealing with — and what you're not.</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>Critical Trap</strong>
+      Founders almost always overestimate how well they understand the problem. Keep questioning until the answers stop surprising you — and they will surprise you.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the root cause? Apply the "5 Whys" — ask why 5 times in a row and document each layer.</div>
+          <textarea class="qa-answer" style="min-height:90px;" placeholder="Why 1:&#10;Why 2:&#10;Why 3:&#10;Why 4:&#10;Why 5 (root cause):"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the exact context in which this problem occurs — time, place, trigger event?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What emotion does the person feel when experiencing this problem? Frustration? Helplessness? Embarrassment?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Is this a universal problem or does it only apply in specific conditions (geography, company size, industry)?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who benefits from this problem existing? (Incumbents, middlemen, regulators — they'll resist your solution.)</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Has anyone tried to solve this before and failed? What did they get wrong?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What would the perfect world look like for the person experiencing this problem?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Apply the "5 Whys" to your problem statement. Document each layer. The fifth answer is your real problem.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Draw the problem journey: what happens before, during, and after the pain point? Where exactly does it break?</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Conduct 5 more structured customer discovery interviews (20–30 min). Focus on the past: "Tell me about the last time this happened."</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Document the most surprising thing you heard. If nothing surprised you, your questions weren't deep enough.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify whether this is a "hair-on-fire" problem (urgent, desperate) or a nice-to-have. Only the former justifies a startup.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Write a revised problem statement incorporating what you've learned. If it hasn't changed, you haven't learned anything.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Root Cause Identified</div><div class="criterion-text">You've traced the problem past surface symptoms to a structural cause.</div></div>
+        <div class="criterion"><div class="criterion-label">Hair on Fire</div><div class="criterion-text">At least 3 interviewees described this as urgent enough that they actively seek a better solution.</div></div>
+        <div class="criterion"><div class="criterion-label">Consistent Pattern</div><div class="criterion-text">Multiple unconnected people describe the same problem in similar language without being led.</div></div>
+        <div class="criterion"><div class="criterion-label">Stakes Are Real</div><div class="criterion-text">The cost is significant enough to justify paying for or switching behaviour.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>Problem is deep, urgent, and consistently described across interviews. Root cause is clear.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Problem is real but scope is unclear — can't tell if it's a feature or a company. Narrow further.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Discovery revealed a related but more painful problem. Reframe around that instead.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>The problem is trivial, infrequent, or accepted as normal with no desire to change.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 3 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 03 / 12</span> · Customer Identification</div>
+      <h2 class="step-title">Define exactly who you're building for — and who you're not</h2>
+      <p class="step-objective">Vague customer definitions kill startups. "SMBs" is not a customer. "Marketing managers at SaaS companies with 50–500 employees managing paid acquisition budgets over €50k/month" is a customer. This step forces precision.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who experiences this problem most acutely? Not broadly — specifically.</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who has both the problem AND the ability to pay for a solution?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who is your "early adopter" — the person most desperate for a solution right now, even if imperfect?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who makes the purchase decision vs. who uses the product? Are they the same person?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What does a day in their life look like? Where do they spend time, who do they talk to, what tools do they use?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>How large is this customer segment? Is it large enough to build a business on?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Write a one-paragraph Ideal Customer Profile (ICP) with demographic and psychographic specifics. No weasel words like "anyone who…"</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>List 3 distinct customer segments. Rank them by: pain severity, willingness to pay, ease to reach, and market size.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Pick ONE primary segment to focus on. Justify with evidence, not preference.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify 10 specific real people or companies matching your ICP. Name them. If you can't name 10, the segment isn't defined enough.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Map the decision-making process: who discovers the problem, evaluates solutions, approves the purchase, and uses it daily.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Estimate TAM/SAM/SOM using bottoms-up math, not top-down percentages.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Specificity</div><div class="criterion-text">ICP is specific enough that you could find 100 matching people on LinkedIn in under an hour.</div></div>
+        <div class="criterion"><div class="criterion-label">Pain + Budget</div><div class="criterion-text">Target customer both feels the pain acutely AND has a budget or willingness to pay.</div></div>
+        <div class="criterion"><div class="criterion-label">Reachable</div><div class="criterion-text">You can identify a channel to reach this customer without a massive marketing budget.</div></div>
+        <div class="criterion"><div class="criterion-label">Market Size</div><div class="criterion-text">SOM in Year 1 is a real revenue number. SAM is large enough to support scale.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>Named, specific, reachable segment with confirmed pain and ability to pay.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Segment too broad. Narrow until you can name specific companies or people.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>A different segment has more pain or more budget. Shift primary focus.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>No specific segment has both the pain and the purchasing power.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ PHASE 2 ════════════════ -->
+  <div class="phase-divider">
+    <div class="pd-left">
+      <div class="pd-badge">Phase 02 · Validation</div>
+      <div class="pd-title">Evidence Over Optimism.</div>
+      <div class="pd-desc">Phase 2 forces you to prove market demand, understand competition, and define why you'd win — using external data and real behaviour, not projections.</div>
+    </div>
+    <div class="pd-steps">
+      <div class="pd-step-tag">Step 04 · Market Need</div>
+      <div class="pd-step-tag">Step 05 · Competitor Analysis</div>
+      <div class="pd-step-tag">Step 06 · Unique Value Prop</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 4 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 04 / 12</span> · Market Need Validation</div>
+      <h2 class="step-title">Prove the market wants this — not just that people say they do</h2>
+      <p class="step-objective">People lie in surveys. What matters is what they do with their time, money, and attention. This step forces you to find behavioural evidence of demand, not just stated preference.</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>The "Mom Test" Trap</strong>
+      If you're asking "Would you use this?" you're doing it wrong. Ask about existing behaviour: What do they currently do? What have they already paid for? What did they try that failed? Actions reveal truth; words reveal politeness.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Are people already spending money on inferior solutions? What are they spending?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Are there active communities (subreddits, Slack groups, forums) where people discuss this problem and seek advice?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the search volume for this problem? Are people actively looking for solutions online?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Have any companies tried and failed in this space? What was their failure mode?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Is this a growing problem (tailwinds exist) or a shrinking one? What macro trend drives it?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Can you get someone to pay you — even a small amount — before building anything? Document all attempts.</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Run Google Keyword Planner or Ahrefs on 10 search queries related to your problem. Document monthly volumes and trends.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Spend 2 hours on Reddit, Quora, LinkedIn, G2, Trustpilot. Find 20 real complaints about this problem. Screenshot them.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Create a "fake door" landing page and measure sign-up conversion rate. Minimum threshold: 5% of visitors convert.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Attempt to pre-sell: message 20 target customers with a 1-paragraph pitch. Count genuine "when can I get this?" responses.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Research market size using industry reports or comparable company revenues. Cross-check bottoms-up vs. top-down.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Interview 3 people who tried existing solutions and abandoned them. What was the final straw? What would make them switch?</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Behavioural Demand</div><div class="criterion-text">People already spend money or time on inferior solutions — not just say they'd consider yours.</div></div>
+        <div class="criterion"><div class="criterion-label">Organic Evidence</div><div class="criterion-text">Strangers publicly complain about this problem and seek solutions without knowing you exist.</div></div>
+        <div class="criterion"><div class="criterion-label">Pre-Sell Signal</div><div class="criterion-text">At least 2–3 people responded positively to a cold pre-sell pitch or joined a waitlist.</div></div>
+        <div class="criterion"><div class="criterion-label">Trend Direction</div><div class="criterion-text">The problem is growing, not shrinking. A macro tailwind drives demand.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>Behavioural evidence, organic demand signals, and at least 1 pre-sell or conversion exists.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Signals are weak. Run more pre-sell tests or narrow the segment to find a hotter pocket of demand.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Demand exists for a slightly different solution. Adjust the solution direction.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>No behavioural evidence of demand. People only give verbal interest. Nobody acts.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 5 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 05 / 12</span> · Competitor Analysis</div>
+      <h2 class="step-title">Understand what you're walking into — and who will fight back</h2>
+      <p class="step-objective">If you think you have no competitors, you don't understand your market. Competition validates demand. Lack of competition may signal a dead end.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who else is solving this problem — directly, indirectly, or partially?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What are the top 3 existing solutions? What do customers like and hate about them?</div>
+          <textarea class="qa-answer" style="min-height:80px;" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the incumbents' business model, pricing, and go-to-market strategy?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Where do competitors fall short — by design, by choice, or by constraint?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>If a large player wanted to copy your idea tomorrow, how quickly could they? What would stop them?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What do customers say in 1-star reviews of competitor products? (This is your feature roadmap.)</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>List every direct and indirect competitor. Minimum 5 total.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>For the top 3: document pricing, key features, customer reviews, funding stage, and team size.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Read 1-star and 2-star reviews of competitor products. This is your feature roadmap and positioning brief in one document.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Build a 2x2 positioning matrix. Place each competitor on it. Identify a white space where you can own a position.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Sign up for and trial the top 2 competitor products for one week. Document exactly where they fail your ICP.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify what moats competitors have built (network effects, switching costs, IP, data, brand). Assess your ability to overcome each.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Gap Identified</div><div class="criterion-text">A specific, documented weakness in existing solutions that your ICP consistently complains about.</div></div>
+        <div class="criterion"><div class="criterion-label">Moat Awareness</div><div class="criterion-text">You understand competitor moats and can articulate how you'd survive despite them.</div></div>
+        <div class="criterion"><div class="criterion-label">Market Proof</div><div class="criterion-text">Competitors with funding confirm the market is real. You're not first — you're better.</div></div>
+        <div class="criterion"><div class="criterion-label">Positioning Space</div><div class="criterion-text">A defensible, uncrowded position exists on your 2x2 matrix.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>Competition validates demand and you've identified a clear gap you can credibly own.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Gap identified but can't articulate why you'd win. Sharpen differentiation before continuing.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Gap exists in a different segment. Adjust your ICP accordingly.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>Competitors too entrenched, or no competition because there's no market. Either way, stop.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 6 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 06 / 12</span> · Unique Value Proposition</div>
+      <h2 class="step-title">Define exactly why someone would choose you over every alternative</h2>
+      <p class="step-objective">Your UVP is not a tagline. It's the single most important strategic decision you'll make. It must be specific, defensible, and immediately understood by your target customer.</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>Common UVP Failures</strong>
+      "Faster, easier, cheaper" is not a UVP. "AI-powered" is not a UVP. "All-in-one platform" is not a UVP. A real UVP answers: "Why would your exact ICP choose you over doing nothing or using the incumbent — in one sentence a 10-year-old could understand?"
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What specific outcome does your ICP get that they can't get anywhere else?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>If you removed every feature except one, what is the single thing that makes this indispensable?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Can you quantify the value? How much time, money, or effort does your customer save or gain?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your unfair advantage — something competitors can't easily replicate?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Write your UVP using this format: "For [WHO], [PRODUCT] is the only [CATEGORY] that [SPECIFIC OUTCOME] because [PROOF/MECHANISM]."</div>
+          <textarea class="qa-answer" style="min-height:80px;" placeholder="For _____, _____ is the only _____ that _____ because _____."></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>List 3 ways a competitor could replicate your UVP within 12 months. How do you defend against each?</div>
+          <textarea class="qa-answer" style="min-height:80px;" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Test your UVP with 5 target customers: read it to them, then ask "What does that mean to you?" If they can't paraphrase it, rewrite it.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Challenge your own UVP: list 3 ways a competitor could replicate it within 12 months. If all seem plausible, you need a deeper moat.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify your unfair advantage (founder insight, proprietary data, network, tech, distribution).</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Create a comparison table: you vs. top 3 alternatives across 5–7 dimensions that matter to your ICP. Your UVP should be visually obvious.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Quantify the value wherever possible. "Saves 4 hours per week" beats "saves time."</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Clarity Test</div><div class="criterion-text">A stranger from your ICP can accurately describe what you do after one reading.</div></div>
+        <div class="criterion"><div class="criterion-label">Differentiation</div><div class="criterion-text">You can name exactly one thing you do that no direct competitor does for the same ICP.</div></div>
+        <div class="criterion"><div class="criterion-label">Defensibility</div><div class="criterion-text">At least one structural reason competitors can't immediately copy your advantage.</div></div>
+        <div class="criterion"><div class="criterion-label">Customer Language</div><div class="criterion-text">Your UVP uses words your ICP actually uses — not yours.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>UVP is specific, quantified, defensible, and confirmed by ICP in their own words.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>UVP is weak or generic. Return to customer interviews to find the resonant language.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Strongest differentiation is in a different area. Rebuild UVP around your actual advantage.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>You cannot articulate a single compelling reason to choose you over alternatives. This is fatal.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ PHASE 3 ════════════════ -->
+  <div class="phase-divider">
+    <div class="pd-left">
+      <div class="pd-badge">Phase 03 · Feasibility</div>
+      <div class="pd-title">Can You Actually Build This?</div>
+      <div class="pd-desc">Phase 3 is a cold-water assessment of your ability to execute. Great ideas fail due to capability gaps, broken unit economics, and risks that were never confronted.</div>
+    </div>
+    <div class="pd-steps">
+      <div class="pd-step-tag">Step 07 · Technical Feasibility</div>
+      <div class="pd-step-tag">Step 08 · Business Model</div>
+      <div class="pd-step-tag">Step 09 · Risk Analysis</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 7 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 07 / 12</span> · Technical &amp; Operational Feasibility</div>
+      <h2 class="step-title">Assess whether you have — or can get — what it takes to build this</h2>
+      <p class="step-objective">Feasibility isn't about whether the product is theoretically buildable. It's about whether your team can build it within the time and capital you have, at a quality level that satisfies your ICP.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What does the minimum viable version require technically? What skills, infrastructure, and tools?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Does your team have these skills in-house? If not, what is the realistic cost and timeline to acquire them?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Are there regulatory, legal, or compliance barriers? (Healthcare, finance, data privacy, GDPR, industry-specific.)</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What key dependencies exist — APIs, data providers, partnerships — and what happens if they change terms?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>How long will it realistically take to ship an MVP a real customer would pay for?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the single biggest technical or operational risk that could kill this project?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Write a plain-English technical spec of the MVP. Break it into components. Estimate time and skills needed for each.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify every external dependency. For each: what's your fallback if it breaks, gets expensive, or disappears?</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Research all relevant regulations. If applicable, consult a lawyer for 1 hour — cost is minimal vs. the risk of building on shaky legal ground.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Honestly audit your team's capability gaps. Provide a concrete plan (hire, outsource, learn) for each gap.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Create a realistic build timeline with a 50% buffer for unknowns. If that takes you to cash-zero, reduce scope or raise capital.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify the single biggest technical assumption. Design the cheapest possible test to validate it before committing to a full build.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Buildable</div><div class="criterion-text">MVP can be built with available skills or affordable hires within 3–6 months.</div></div>
+        <div class="criterion"><div class="criterion-label">Legal Clarity</div><div class="criterion-text">No unresolved legal or compliance blocker that could prevent launch or require significant rework.</div></div>
+        <div class="criterion"><div class="criterion-label">Dependency Risk</div><div class="criterion-text">No single external dependency can kill the product without a viable alternative.</div></div>
+        <div class="criterion"><div class="criterion-label">Timeline Reality</div><div class="criterion-text">MVP ships before runway ends, at a quality level customers would actually pay for.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>MVP is buildable within realistic constraints. No fatal blockers exist.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Gaps exist but are fillable. Hire, reduce MVP scope, or partner before proceeding.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Full product isn't feasible but a simpler version of the core value is. Build that instead.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>Critical capability gap, regulatory blocker, or impossible timeline makes execution infeasible.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 8 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 08 / 12</span> · Business Model Validation</div>
+      <h2 class="step-title">Prove the unit economics work before you build anything</h2>
+      <p class="step-objective">A good product with a broken business model is a charity. This step forces you to stress-test how money flows in and out of the business at unit level — before you spend a cent on development.</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>The CAC Delusion</strong>
+      Founders consistently underestimate CAC by 3–5x and overestimate LTV by the same. Build your model using pessimistic CAC and conservative churn assumptions, then ask if the business still works. If it only works when everything goes right, it won't work.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your revenue model — subscription, transaction fee, usage-based, marketplace, licensing?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What price will customers actually pay? How did you test this — not just ask?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your realistic Cost to Acquire a Customer (CAC) via your primary channel?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the average customer lifetime? What drives churn and how do you contain it?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your LTV:CAC ratio? (Must exceed 3:1 to be investable.) What is your gross margin?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the single assumption in your business model that, if wrong, kills the business?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Build a unit economics model in a spreadsheet: Price → COGS → Gross Profit → CAC → LTV → Payback Period. No verbal estimates.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Run 3 pricing sensitivity tests at 3 different price points with 10 target customers each. Use Willingness-to-Pay framework.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Estimate CAC using industry benchmarks for your primary channel. Add 100% buffer to be conservative.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Stress-test: what happens if CAC doubles? If monthly churn is 10%? If price must drop 30%? Does the model survive?</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Complete the full Lean Canvas — all 9 blocks. Every empty block is a gap in your thinking.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Design the fastest, cheapest test to validate your most dangerous business model assumption.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">LTV:CAC ≥ 3:1</div><div class="criterion-text">Lifetime value exceeds acquisition cost by at least 3x. Calculated with real data, not guesses.</div></div>
+        <div class="criterion"><div class="criterion-label">Payback &lt;18 Months</div><div class="criterion-text">CAC is recovered within 18 months at realistic pricing and retention.</div></div>
+        <div class="criterion"><div class="criterion-label">Gross Margin ≥ 50%</div><div class="criterion-text">Sufficient margin to eventually fund growth without perpetual external capital.</div></div>
+        <div class="criterion"><div class="criterion-label">Stress-Test Survival</div><div class="criterion-text">Business model remains viable under 2 simultaneous pessimistic assumptions.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>Unit economics work under conservative assumptions. Clear path to profitability exists.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Economics are marginal. Test higher pricing, lower-CAC channels, or reduce COGS before committing.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Revenue model is wrong. Customers won't pay in this structure. Change the model, not the product.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>Unit economics don't work even under optimistic assumptions. No realistic path to profitability.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 9 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 09 / 12</span> · Risk Analysis</div>
+      <h2 class="step-title">Name every risk before it names you</h2>
+      <p class="step-objective">Risk analysis is operational intelligence. The founders who survive anticipated threats and built responses before being forced to improvise under pressure.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What are the top 5 reasons this fails? Be brutally specific — not "competition" but "Salesforce adds this as a native feature in 6 months."</div>
+          <textarea class="qa-answer" style="min-height:100px;" placeholder="1.&#10;2.&#10;3.&#10;4.&#10;5."></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What external forces could make your solution irrelevant — regulation change, technology shift, market collapse?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your biggest team risk — single point of failure, skills gap, co-founder conflict?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What happens if your primary customer acquisition channel disappears overnight?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your runway, and what happens if revenue is 6 months behind plan?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Run a Pre-Mortem: "It's 18 months from now and this failed completely. Write the story of why." Turn each cause into a mitigation.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Create a Risk Register: list all risks with Probability (H/M/L), Impact (Fatal/Serious/Minor), and a specific mitigation for each.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify your 3 critical dependencies. For each: what's the backup plan if it fails or gets 3x more expensive?</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Map financial risk: months of runway, break-even revenue, and your plan if you're 50% off targets at Month 6.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Identify 1–2 black-swan risks. Decide explicitly whether to accept, mitigate, or transfer (insurance/legal) each one.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Review your risk register with a skeptic. Their objections are gifts.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Pre-Mortem Done</div><div class="criterion-text">Failure story written and each cause converted into a concrete mitigation or early warning signal.</div></div>
+        <div class="criterion"><div class="criterion-label">Risk Register Complete</div><div class="criterion-text">Every high-impact risk has a specific, actionable response — not "we'll deal with it later."</div></div>
+        <div class="criterion"><div class="criterion-label">Runway Clarity</div><div class="criterion-text">You know exactly how many months of runway you have and what triggers a fundraise or pivot decision.</div></div>
+        <div class="criterion"><div class="criterion-label">No Hidden Killers</div><div class="criterion-text">No risk is listed as "low priority" simply because it's uncomfortable to confront.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>All high-impact risks have mitigations. No single risk can end the business without a recovery path.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>Risk register incomplete or mitigations are theoretical. Build real responses before moving forward.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Risks concentrated in one area — adjust strategy to reduce exposure before committing.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>Multiple fatal risks with no viable mitigation exist simultaneously. Probability of survival too low.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ PHASE 4 ════════════════ -->
+  <div class="phase-divider">
+    <div class="pd-left">
+      <div class="pd-badge">Phase 04 · Launch Readiness</div>
+      <div class="pd-title">Build the Minimum. Learn the Maximum.</div>
+      <div class="pd-desc">Phase 4 is execution with discipline. Build only what tests your riskiest assumption. Gather feedback with rigour. Then make a final, evidence-backed decision.</div>
+    </div>
+    <div class="pd-steps">
+      <div class="pd-step-tag">Step 10 · MVP Definition</div>
+      <div class="pd-step-tag">Step 11 · Test &amp; Feedback</div>
+      <div class="pd-step-tag">Step 12 · Go / No-Go</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 10 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 10 / 12</span> · MVP Definition</div>
+      <h2 class="step-title">Define the smallest thing you can build that tests your core thesis</h2>
+      <p class="step-objective">Your MVP is not a beta product. It's a learning instrument. It exists to test the riskiest assumption in your model as quickly and cheaply as possible. Every feature that doesn't test that assumption is waste.</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>The MVP Myth</strong>
+      Most "MVPs" are mini-products — polished, full-featured, and built over 6 months. A real MVP can be a spreadsheet, a Notion doc, a concierge service, or a manual process wrapped in a UI. If you can test your hypothesis without code, do that first.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the single most critical assumption your business is built on? This is what your MVP must test.</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the minimum set of features that proves or disproves that assumption?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Can you test the assumption without writing code? If yes — describe how.</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Write your MVP success statement: "Our MVP will prove/disprove that [ASSUMPTION] by [METHOD] with [METRIC] within [TIMEFRAME]."</div>
+          <textarea class="qa-answer" placeholder="Our MVP will prove/disprove that _____ by _____ with _____ within _____."></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Who are your first 10 MVP users? List them by name or role. If you can't name 10, your go-to-market is already broken.</div>
+          <textarea class="qa-answer" style="min-height:80px;" placeholder="1.&#10;2.&#10;3.&#10;…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your hard deadline and budget cap for the MVP phase?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>List all planned features. For each: "Does this test our core assumption?" If not, cut it from V1.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Choose MVP type: Concierge (manual delivery), Wizard of Oz (fake automation), Landing Page, Prototype, or No-Code. Pick cheapest option that generates real signal.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Reach out to your first 10 MVP users individually. If you can't recruit 10, your GTM is already broken.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Define success threshold in advance: "We proceed if X of Y users do Z within W days." Do not change this after seeing results.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Set a hard deadline and budget cap. Build and test within those constraints, or not at all.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Core Test Defined</div><div class="criterion-text">MVP tests exactly one critical assumption. Success/fail criteria written before building starts.</div></div>
+        <div class="criterion"><div class="criterion-label">Scope Minimal</div><div class="criterion-text">Every feature directly linked to testing the core assumption. Nothing included "just in case."</div></div>
+        <div class="criterion"><div class="criterion-label">Users Identified</div><div class="criterion-text">10 specific users committed to using and providing feedback on the MVP.</div></div>
+        <div class="criterion"><div class="criterion-label">Timeline Constrained</div><div class="criterion-text">Hard deadline set. MVP ships within 4–8 weeks maximum.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>MVP is scoped, users are lined up, success criteria are written, timeline is set. Build it.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Refine</span>MVP still too large. Cut until one assumption remains.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>Can't recruit MVP users — ICP doesn't care enough. Reconsider the problem or the customer.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>Cheapest possible MVP still requires too much time or capital before runway ends.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 11 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 11 / 12</span> · Testing &amp; Feedback Loops</div>
+      <h2 class="step-title">Run structured tests. Separate signal from noise. Iterate with discipline.</h2>
+      <p class="step-objective">Feedback is only valuable if collected and interpreted with rigour. Unsolicited praise is noise. Unprompted return behaviour is signal.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Key Questions &amp; Answers</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Are users returning without being prompted to? What is your Week 1 and Week 2 retention rate?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is the exact moment users get value from the product — the "aha moment"? How long does it take to reach it?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>Where do users drop off or get confused? What does your funnel look like?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What are users doing that you didn't expect — both positively and negatively?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What do your churned users have in common? What do your best-retained users have in common?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">Q→</span>What is your current NPS? What do the open-ended comments say?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Action Items</div>
+      <ul class="checklist">
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Watch 5 users use your MVP without helping or explaining. Document every moment of hesitation or abandonment. Do not interrupt.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Track one north star metric that measures whether users are getting core value. Review weekly.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Run weekly 20-min interviews with active users: "What did you use it for this week? Most frustrating moment? What would you miss if it disappeared?"</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Survey churned users within 48 hours: "What made you stop?" This is more valuable than any other data source.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Run at least 2 full build-measure-learn cycles. Each must change something and measure the result.</li>
+        <li class="check-item" onclick="toggle(this)"><div class="check-box"><span class="check-mark">✓</span></div>Document every learning regardless of whether it supports or contradicts your hypothesis. Honest logs beat selective memory.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Validation Criteria</div>
+      <div class="criteria-grid">
+        <div class="criterion"><div class="criterion-label">Retention Signal</div><div class="criterion-text">Users return on their own, unprompted, at least once within the first week.</div></div>
+        <div class="criterion"><div class="criterion-label">Paying Customers</div><div class="criterion-text">At least 3 users have paid real money, or committed to pay at launch.</div></div>
+        <div class="criterion"><div class="criterion-label">Aha Moment ID'd</div><div class="criterion-text">You know which action correlates with a user becoming retained. This drives your onboarding.</div></div>
+        <div class="criterion"><div class="criterion-label">Learning Velocity</div><div class="criterion-text">Each cycle teaches something new. If you're not being surprised, you're not testing deeply enough.</div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Decision Gate</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ Proceed</span>Retention exists, people are paying, core value is proven, and you know exactly why people come back.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ Iterate</span>Engagement exists but retention doesn't. Keep iterating on onboarding and the time-to-value path.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ Pivot</span>A different use case is getting traction than planned. Follow the retention data, not your roadmap.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ Kill</span>No user has returned without prompting. No user has paid. Fundamental demand is not there.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STEP 12 ── -->
+  <section class="step-section">
+    <div class="step-header">
+      <div class="step-eyebrow"><span class="step-num-badge">Step 12 / 12</span> · Final Validation &amp; Go / No-Go Decision</div>
+      <h2 class="step-title">Make a clear, evidence-backed decision. No hedging.</h2>
+      <p class="step-objective">This is a court verdict, not a committee discussion. You've collected evidence across 11 steps. Now weigh it dispassionately and commit. Indecision at this stage is its own decision — and the worst one you can make.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Evidence Summary</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">→</span>What evidence most strongly supports building this?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">→</span>What still remains unvalidated or uncertain?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">→</span>What was the biggest surprise or thing you got wrong during this process?</div>
+          <textarea class="qa-answer" placeholder="Your answer…"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">→</span>List your 3 most important assumption-to-reality learnings (what you assumed vs. what you found):</div>
+          <textarea class="qa-answer" style="min-height:90px;" placeholder="1. We assumed _____ → we found _____&#10;2. We assumed _____ → we found _____&#10;3. We assumed _____ → we found _____"></textarea>
+        </li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Scorecard — Rate Each Dimension 1–5</div>
+      <div class="scorecard">
+        <div class="score-row">
+          <span class="score-num">01</span>
+          <span class="score-label">Problem Severity<small>1 = minor inconvenience · 5 = urgent, costly, completely unsolved</small></span>
+          <input class="score-input" type="number" min="1" max="5" placeholder="—" oninput="updateTotal()">
+        </div>
+        <div class="score-row">
+          <span class="score-num">02</span>
+          <span class="score-label">Market Evidence<small>1 = verbal interest only · 5 = people paid without being asked</small></span>
+          <input class="score-input" type="number" min="1" max="5" placeholder="—" oninput="updateTotal()">
+        </div>
+        <div class="score-row">
+          <span class="score-num">03</span>
+          <span class="score-label">Customer Specificity<small>1 = vague segment · 5 = named ICP with confirmed pain and budget</small></span>
+          <input class="score-input" type="number" min="1" max="5" placeholder="—" oninput="updateTotal()">
+        </div>
+        <div class="score-row">
+          <span class="score-num">04</span>
+          <span class="score-label">Competitive Position<small>1 = no defensible edge · 5 = clear unfair advantage, defensible moat</small></span>
+          <input class="score-input" type="number" min="1" max="5" placeholder="—" oninput="updateTotal()">
+        </div>
+        <div class="score-row">
+          <span class="score-num">05</span>
+          <span class="score-label">Unit Economics<small>1 = no viable path · 5 = LTV:CAC &gt;3x proven with real data</small></span>
+          <input class="score-input" type="number" min="1" max="5" placeholder="—" oninput="updateTotal()">
+        </div>
+        <div class="score-row">
+          <span class="score-num">06</span>
+          <span class="score-label">Execution Capability<small>1 = critical skill/team gaps · 5 = all capabilities covered, no blockers</small></span>
+          <input class="score-input" type="number" min="1" max="5" placeholder="—" oninput="updateTotal()">
+        </div>
+        <div class="score-row">
+          <span class="score-num">07</span>
+          <span class="score-label">MVP Validation<small>1 = no retention or payment · 5 = paying customers returning unprompted</small></span>
+          <input class="score-input" type="number" min="1" max="5" placeholder="—" oninput="updateTotal()">
+        </div>
+        <div class="score-total-row">
+          <span class="score-total-label">Total Score (max 35)</span>
+          <span class="score-total-val" id="scoreTotal">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Scoring Thresholds</div>
+      <div class="gate">
+        <div class="gate-card proceed"><span class="gate-label">✓ GO — 29–35</span>Strong evidence across all dimensions. Proceed to full build and go-to-market.</div>
+        <div class="gate-card improve"><span class="gate-label">↻ CONDITIONAL GO — 21–28</span>Mostly strong but 1–2 dimensions are weak. Fix them in 30 days, then reassess before committing capital.</div>
+        <div class="gate-card pivot"><span class="gate-label">⇄ PIVOT — 14–20</span>Core problem or model is wrong. Reframe and repeat from Step 4 with a revised hypothesis.</div>
+        <div class="gate-card discard"><span class="gate-label">✕ KILL — 7–13</span>Fundamental gaps across multiple dimensions. Kill it now, capture learnings, start fresh.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Verdict</div>
+      <div class="verdict-block">
+        <label>Select Your Verdict</label>
+        <div class="verdict-radios">
+          <label class="verdict-radio go"><input type="radio" name="verdict" value="go"> ✓ GO</label>
+          <label class="verdict-radio cgo"><input type="radio" name="verdict" value="cgo"> ↻ CONDITIONAL GO</label>
+          <label class="verdict-radio pivot"><input type="radio" name="verdict" value="pivot"> ⇄ PIVOT</label>
+          <label class="verdict-radio kill"><input type="radio" name="verdict" value="kill"> ✕ KILL</label>
+        </div>
+        <label>Verdict Reasoning — be specific. What evidence drove this decision?</label>
+        <textarea class="verdict-textarea" placeholder="The decision is _____ because _____. The strongest signal was _____."></textarea>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">90-Day Milestones (if GO or Conditional GO)</div>
+      <table class="milestones">
+        <thead>
+          <tr>
+            <th style="width:100px;">Month</th>
+            <th>Key Milestone</th>
+            <th>Success Metric</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" value="Month 1" readonly style="font-weight:700;background:var(--surface-2);"></td>
+            <td><input type="text" placeholder="e.g. 5 paying customers onboarded"></td>
+            <td><input type="text" placeholder="e.g. €500 MRR"></td>
+          </tr>
+          <tr>
+            <td><input type="text" value="Month 2" readonly style="font-weight:700;background:var(--surface-2);"></td>
+            <td><input type="text" placeholder="e.g. First retention cohort measured"></td>
+            <td><input type="text" placeholder="e.g. 60% Week-4 retention"></td>
+          </tr>
+          <tr>
+            <td><input type="text" value="Month 3" readonly style="font-weight:700;background:var(--surface-2);"></td>
+            <td><input type="text" placeholder="e.g. Channel CAC validated"></td>
+            <td><input type="text" placeholder="e.g. CAC &lt; €200"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="block">
+      <div class="block-title">First Actions Tomorrow</div>
+      <ul class="qa-list">
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">→</span>North Star Metric — the single number that tells you whether this is working:</div>
+          <textarea class="qa-answer" style="min-height:48px;" placeholder="e.g. Weekly Active Users who complete one core action"></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">→</span>First 3 people to call or email tomorrow morning (name them):</div>
+          <textarea class="qa-answer" style="min-height:70px;" placeholder="1.&#10;2.&#10;3."></textarea>
+        </li>
+        <li class="qa-item">
+          <div class="qa-question"><span class="q-icon">→</span>If KILL or PIVOT — what are the 3 most important learnings to carry forward?</div>
+          <textarea class="qa-answer" style="min-height:80px;" placeholder="1.&#10;2.&#10;3."></textarea>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</div><!-- end page-wrap -->
+
+<script>
+function toggle(el) {
+  el.classList.toggle('checked');
+  updateProgress();
+}
+
+function updateProgress() {
+  const all  = document.querySelectorAll('.check-item');
+  const done = document.querySelectorAll('.check-item.checked');
+  const pct  = all.length ? Math.round((done.length / all.length) * 100) : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progPct').textContent  = pct + '%';
+}
+
+function updateTotal() {
+  const inputs = document.querySelectorAll('.score-input');
+  let total = 0, filled = 0;
+  inputs.forEach(inp => {
+    const v = parseInt(inp.value);
+    if (!isNaN(v) && v >= 1 && v <= 5) { total += v; filled++; }
+  });
+  const el = document.getElementById('scoreTotal');
+  el.textContent = filled > 0 ? total + ' / 35' : '—';
+}
+
+updateProgress();
+</script>
+</body>
+</html>
