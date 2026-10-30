@@ -1,24 +1,28 @@
+name: live-translate
+
 services:
   translate:
     image: libretranslate/libretranslate:v1.9.6
+    restart: unless-stopped
     environment:
-      LT_LOAD_ONLY: en,es,fr,de,hi   # every language you load costs RAM and startup time
+      LT_LOAD_ONLY: ${LANGUAGES:-en,es,fr,de,hi}
     volumes:
       - lt-models:/home/libretranslate/.local
     healthcheck:
       test: ["CMD-SHELL", "./venv/bin/python scripts/healthcheck.py"]
       interval: 10s
-      retries: 60
+      retries: 90   # first start downloads translation models
 
   app:
     build: ./app
+    restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
     environment:
       MT_URL: http://translate:5000
-      WHISPER_MODEL: small
+      WHISPER_MODEL: ${WHISPER_MODEL:-base}
       VOICE_DIR: /data/voices
-      VOICES: en=en_US-lessac-medium,es=es_ES-davefx-medium,fr=fr_FR-siwis-medium,de=de_DE-thorsten-medium,hi=hi_IN-pratham-medium
+      VOICES: ${VOICES:-en=en_US-lessac-medium,es=es_ES-davefx-medium,fr=fr_FR-siwis-medium,de=de_DE-thorsten-medium,hi=hi_IN-pratham-medium}
     volumes:
       - app-data:/data
       - hf-cache:/root/.cache/huggingface

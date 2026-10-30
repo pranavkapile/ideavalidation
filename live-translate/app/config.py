@@ -1,6 +1,6 @@
 import os
 
-WHISPER_MODEL = os.getenv("WHISPER_MODEL", "small")      # tiny/base/small/medium/large-v3-turbo
+WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")      # tiny/base/small/medium/large-v3-turbo
 WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")      # cpu or cuda
 WHISPER_COMPUTE = os.getenv("WHISPER_COMPUTE", "int8")   # int8 on CPU, float16 on GPU
 MT_URL = os.getenv("MT_URL", "http://localhost:5000")    # LibreTranslate
