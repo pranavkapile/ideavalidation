@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Translate</title>
+<style>
+  :root { --bg:#fafafa; --fg:#1a1a1a; --muted:#666; --card:#fff; --line:#ddd; --accent:#2563eb; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#121212; --fg:#eee; --muted:#999; --card:#1d1d1d; --line:#333; --accent:#60a5fa; } }
+  body { font:16px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--fg); max-width:720px; margin:0 auto; padding:16px; }
+  fieldset { border:1px solid var(--line); border-radius:8px; background:var(--card); margin-bottom:16px; }
+  label { display:inline-block; margin:4px 12px 4px 0; }
+  input, select, button { font:inherit; padding:6px 10px; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:6px; cursor:pointer; }
+  #log { border:1px solid var(--line); border-radius:8px; background:var(--card); padding:12px; min-height:200px; }
+  #log p { margin:0 0 10px; } #log small { color:var(--muted); display:block; }
+  .status { color:var(--muted); }
+</style>
+</head>
+<body>
+<h1>Live Translate</h1>
+<fieldset>
+  <label>Room <input id="room" value="demo" size="10"></label>
+  <span class="status" id="status">idle</span>
+</fieldset>
+<fieldset>
+  <legend>Speak</legend>
+  <label>I speak <select id="speakLang"><option value="auto">auto-detect</option></select></label>
+  <button id="speakBtn">Start speaking</button>
+</fieldset>
+<fieldset>
+  <legend>Listen</legend>
+  <label>Translate to <select id="listenLang"></select></label>
+  <label><input type="checkbox" id="audioOn" checked> play speech</label>
+  <button id="listenBtn">Start listening</button>
+</fieldset>
+<div id="log"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const wsUrl = path => `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}${path}`;
+const status = t => $("status").textContent = t;
+const addLine = (main, sub) => {
+  const p = document.createElement("p");
+  p.textContent = main;
+  if (sub) { const s = document.createElement("small"); s.textContent = sub; p.append(s); }
+  $("log").prepend(p);
+};
+
+fetch("/api/languages").then(r => r.json()).then(({ translate, voices }) => {
+  for (const code of translate.length ? translate : voices) {
+    const label = code + (voices.includes(code) ? "" : " (captions only)");
+    $("speakLang").add(new Option(code, code));
+    $("listenLang").add(new Option(label, code));
+  }
+});
+
+// Captures mic audio, downsamples to 16 kHz mono PCM16, posts ~100 ms chunks.
+const WORKLET = `
+class Pcm16 extends AudioWorkletProcessor {
+  constructor() { super(); this.ratio = sampleRate / 16000; this.pos = 0; this.out = []; }
+  process([input]) {
+    const ch = input[0];
+    if (!ch) return true;
+    for (; this.pos < ch.length; this.pos += this.ratio) {
+      const s = Math.max(-1, Math.min(1, ch[Math.floor(this.pos)]));
+      this.out.push(s * 32767);
+    }
+    this.pos -= ch.length;
+    if (this.out.length >= 1600) { this.port.postMessage(Int16Array.from(this.out).buffer); this.out = []; }
+    return true;
+  }
+}
+registerProcessor("pcm16", Pcm16);`;
+
+let speaking = null;
+$("speakBtn").onclick = async () => {
+  if (speaking) { speaking(); return; }
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+  const ctx = new AudioContext();
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([WORKLET], { type: "text/javascript" })));
+  const node = new AudioWorkletNode(ctx, "pcm16");
+  ctx.createMediaStreamSource(stream).connect(node);
+  const ws = new WebSocket(wsUrl(`/ws/speak/${encodeURIComponent($("room").value)}?lang=${$("speakLang").value}`));
+  ws.onopen = () => status("speaking…");
+  ws.onmessage = e => { const m = JSON.parse(e.data); addLine(`🎤 ${m.text}`, `detected: ${m.src}`); };
+  ws.onclose = () => speaking && speaking();
+  node.port.onmessage = e => ws.readyState === 1 && ws.send(e.data);
+  $("speakBtn").textContent = "Stop speaking";
+  speaking = () => {
+    speaking = null;
+    stream.getTracks().forEach(t => t.stop()); ctx.close(); ws.close();
+    $("speakBtn").textContent = "Start speaking"; status("idle");
+  };
+};
+
+let listening = null;
+$("listenBtn").onclick = () => {
+  if (listening) { listening(); return; }
+  const ctx = new AudioContext();
+  let playAt = 0;
+  const ws = new WebSocket(wsUrl(`/ws/listen/${encodeURIComponent($("room").value)}?lang=${$("listenLang").value}`));
+  ws.binaryType = "arraybuffer";
+  ws.onopen = () => status(`listening in ${$("listenLang").value}…`);
+  ws.onmessage = async e => {
+    if (typeof e.data === "string") {
+      const m = JSON.parse(e.data);
+      addLine(m.text, m.src !== m.lang ? `${m.src}: ${m.original}` : "");
+    } else if ($("audioOn").checked) {
+      const buf = await ctx.decodeAudioData(e.data);
+      const src = ctx.createBufferSource();
+      src.buffer = buf; src.connect(ctx.destination);
+      playAt = Math.max(playAt, ctx.currentTime);  // queue clips back to back
+      src.start(playAt); playAt += buf.duration;
+    }
+  };
+  ws.onclose = () => listening && listening();
+  $("listenBtn").textContent = "Stop listening";
+  listening = () => {
+    listening = null; ws.close(); ctx.close();
+    $("listenBtn").textContent = "Start listening"; status("idle");
+  };
+};
+</script>
+</body>
+</html>

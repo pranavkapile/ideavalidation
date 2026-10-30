@@ -3,6 +3,11 @@
 Compact on purpose: this is the file to give an AI coding assistant as context.
 Background and rationale are in `live-translation-platform-plan.md`.
 
+> **Implemented MVP (see `app/`, run instructions in `README.md`):** to keep local setup to two
+> containers, speech-to-text (faster-whisper + its built-in Silero VAD) and text-to-speech (Piper)
+> run inside the orchestrator process; only translation (LibreTranslate) is a separate service.
+> Speaker frames are PCM16 at 16 kHz; captions are sent for final segments only (no partials yet).
+
 ## Stack (pin versions when building)
 
 | Layer | Tool | Runs as |
