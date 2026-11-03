@@ -1,6 +1,6 @@
 # Crest & Caliper — Logo Intro Animation
 
-A 14.6-second brand intro that follows one bean from **green to roasted**, then resolves on the official logo frame.
+A 14.6-second roastery intro. **The logo icon is the roaster:** the funnel is the hopper, the round bulb is the drum window and the base is the burner. The film shows one full roast inside it, then the roaster folds down into the official logo frame.
 
 | File | What it is |
 |---|---|
@@ -9,19 +9,19 @@ A 14.6-second brand intro that follows one bean from **green to roasted**, then 
 | `intro.html` | Source animation. Open it in a browser for a live preview (click to replay). Fonts are embedded. |
 | `render.js` | Frame-accurate renderer (Playwright → PNG frames → ffmpeg) |
 
-## Storyboard: the bean's journey
+## Storyboard: one roast
 
 | Time | Stage | What happens |
 |---|---|---|
-| 0.0–2.2s | **GREEN**: raw · dense · unroasted | Fade up from black. A lilac outline draws the bean, which fills with raw green-coffee colour under a cool halo. |
-| 1.9–4.1s | **DRYING**: moisture escapes | The heat comes on: embers rise and white vapour lifts off the bean. Green fades to straw. A roast-curve graph starts drawing, with a live bean-temperature readout. |
-| 4.1–6.0s | **BROWNING**: sugars caramelise | The bean moves through yellow and tan to cinnamon (the Maillard stage). It swells, its crease opens and smoke starts to build. |
-| 6.0–7.0s | **FIRST CRACK**: the bean expands and pops | A run of pops: warm flashes, the bean jolts and chaff bursts off. The graph crosses the first-crack marker. |
-| 7.0–8.7s | **ROASTED**: developed · aromatic | The bean deepens to a rich coffee brown with a soft oil sheen. The curve finishes at about 215°C. |
-| 8.5–10.1s | Reveal | The roasted bean shrinks into its place in the mark and turns brand plum. The lilac disc bursts out from it, and the roastery fades into the café-bokeh background. |
-| 9.5–11.1s | Logo build | The outer ring traces. The icon draws itself around the bean (bulb, then shoulders, then funnel) and the base plate snaps in. |
-| 10.9–12.6s | Wordmark | **CREST & CALIPER** rises letter by letter. **COFFEE ROASTERS** settles in. |
-| 12.6–14.6s | End card | One soft light sheen crosses the disc, then the frame holds on the final logo. |
+| 0.0–1.8s | (build) | Fade up from black. The roaster draws itself in lilac line art: drum window, body, hopper. The burner plate slides in below. |
+| 0.6–2.6s | **CHARGE**: green beans into the drum | Green beans pour through the hopper and land tumbling in the drum. The burner lights with blue flames. A **bean temp** and **roast time** readout appears. |
+| 2.6–4.6s | **DRYING**: moisture escapes | The flames turn orange and the drum window glows. White vapour rises from the hopper as the beans fade from green to straw. |
+| 4.6–6.6s | **BROWNING**: sugars caramelise | The tumbling beans turn yellow, tan and then cinnamon. Embers speed up and smoke builds. |
+| 6.6–7.8s | **FIRST CRACK**: the beans pop | A run of pops: warm flashes, the beans jolt, the flames flare and chaff bursts out of the drum. |
+| 7.8–9.4s | **DROP**: roast complete | The beans reach a rich brown at about 215°C and 12:00. The flames go out and the beans gather into a single roasted bean in the centre of the drum. |
+| 9.3–10.8s | Fold-down | The roaster shrinks into the logo icon, the burner slides up to become the base plate, and the line art turns brand plum. The lilac disc bursts out from the bean as the background shifts to café bokeh. |
+| 10.3–12.7s | Wordmark | The outer ring traces, **CREST & CALIPER** rises letter by letter and **COFFEE ROASTERS** settles in. |
+| 12.7–14.6s | End card | One soft sheen crosses the disc, then the frame holds on the final logo. |
 
 ## Brand values used
 - Lilac `#D4C0DC`, ink/plum `#29152F` (sampled from the supplied logo)
