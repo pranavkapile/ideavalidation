@@ -123,7 +123,21 @@
   const qs = new URLSearchParams(location.search);
   const W = +qs.get('w') || 1080, H = +qs.get('h') || 1920;
   const CAPTURE = qs.has('capture');
-  const DURATION = 14.6;
+  // ?cut=short plays a tightened 8s edit by remapping output time onto the full timeline.
+  // Keypoints are [output time, full-timeline time]; keep in sync with sound/sound.py.
+  const CUTS = {
+    full: [[0, 0], [14.6, 14.6]],
+    short: [[0, 0.3], [1.0, 2.0], [3.1, 6.5], [3.9, 7.7], [4.8, 9.35], [6.5, 11.8], [7.1, 12.7], [8.0, 14.6]],
+  };
+  const CUT = CUTS[qs.get('cut')] || CUTS.full;
+  const DURATION = CUT[CUT.length - 1][0];
+  const remap = t => {
+    for (let i = 0; i < CUT.length - 1; i++) {
+      const [a0, b0] = CUT[i], [a1, b1] = CUT[i + 1];
+      if (t <= a1) return b0 + (b1 - b0) * Math.max(0, (t - a0) / (a1 - a0));
+    }
+    return CUT[CUT.length - 1][1];
+  };
   if (CAPTURE) document.body.classList.add('capture');
 
   const stage = document.getElementById('stage');
@@ -515,7 +529,7 @@
 
   // ---------- boot ----------
   window.DURATION = DURATION;
-  window.renderAt = render;
+  window.renderAt = t => render(remap(t));
   window.ready = document.fonts.ready.then(() => Promise.all([
     document.fonts.load('500 40px Montserrat'), document.fonts.load('600 40px Montserrat')
   ])).then(() => { build(); render(0); return true; });
@@ -524,7 +538,7 @@
     let start;
     window.ready.then(() => {
       start = performance.now();
-      const loop = now => { render(Math.min(DURATION, (now - start) / 1000)); requestAnimationFrame(loop); };
+      const loop = now => { render(remap(Math.min(DURATION, (now - start) / 1000))); requestAnimationFrame(loop); };
       requestAnimationFrame(loop);
       addEventListener('click', () => { start = performance.now(); });
     });

@@ -1,4 +1,4 @@
-// Usage: node render.js <w> <h> <fps> <outdir> [t1,t2,...]   (times => stills only)
+// Usage: [CUT=short] node render.js <w> <h> <fps> <outdir> [t1,t2,...]   (times => stills only)
 const { chromium } = require('playwright');
 const path = require('path'), fs = require('fs');
 (async () => {
@@ -6,7 +6,7 @@ const path = require('path'), fs = require('fs');
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
-  await page.goto('file://' + path.resolve(__dirname, 'intro.html') + `?capture&w=${w}&h=${h}`);
+  await page.goto('file://' + path.resolve(__dirname, 'intro.html') + `?capture&w=${w}&h=${h}&cut=${process.env.CUT || 'full'}`);
   await page.evaluate(() => window.ready);
   const dur = await page.evaluate(() => window.DURATION);
   const times = stills ? stills.split(',').map(Number) : Array.from({ length: Math.round(dur * fps) + 1 }, (_, i) => i / fps);
