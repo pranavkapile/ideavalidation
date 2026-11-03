@@ -44,25 +44,36 @@
         <stop offset=".7" stop-color="#fff" stop-opacity="0"/>
         <stop offset="1" stop-color="#fff" stop-opacity="0"/>
       </radialGradient>
+      <radialGradient id="beanShadeG" cx=".36" cy=".3" r=".78">
+        <stop offset="0" stop-color="#fff" stop-opacity=".22"/>
+        <stop offset=".5" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#000" stop-opacity=".5"/>
+      </radialGradient>
+      <radialGradient id="beanSheenG">
+        <stop offset="0" stop-color="#fff" stop-opacity=".75"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </radialGradient>
     </defs>
 
     <g id="world">
       <!-- ============ INTRO LAYER (camera) ============ -->
       <g id="intro">
-        <g id="caliper" fill="none" stroke="var(--lilac)" stroke-linecap="round">
-          <path id="rulerLine" pathLength="1" stroke-width="2"/>
-          <g id="ticks" stroke-width="1.6"></g>
-          <path id="jawL" stroke-width="2.4"/>
-          <path id="jawR" stroke-width="2.4"/>
-          <path id="dimLine" stroke-width="1.4"/>
-          <path id="dimArrowL" stroke-width="1.4"/>
-          <path id="dimArrowR" stroke-width="1.4"/>
+        <g id="graph" fill="none" stroke="var(--lilac)" stroke-linecap="round" stroke-linejoin="round">
+          <path id="gAxis" pathLength="1" stroke-width="1.6" opacity=".55"/>
+          <g id="gTicks" stroke-width="1.3"></g>
+          <g id="gStages" stroke-width="1.2" stroke-dasharray="2 7"></g>
+          <path id="gCurveGlow" stroke-width="12" opacity=".10"/>
+          <path id="gCurve" stroke-width="2.6"/>
         </g>
-        <text id="readout" text-anchor="middle" fill="var(--lilac)" font-family="Montserrat" font-weight="500" font-size="30" letter-spacing="7"></text>
-        <text id="readoutLabel" text-anchor="middle" fill="var(--lilac)" font-family="Montserrat" font-weight="500" font-size="15" letter-spacing="6" opacity=".6"></text>
+        <circle id="gHalo" r="7" fill="none" stroke="var(--lilac)" stroke-width="1.5"/>
+        <circle id="gDot" r="6.5" fill="var(--lilac)"/>
+        <g id="gLabels" font-family="Montserrat" font-weight="500" font-size="16" letter-spacing="5" fill="var(--lilac)" text-anchor="middle"></g>
+        <text id="readout" text-anchor="middle" fill="var(--lilac)" font-family="Montserrat" font-weight="500" font-size="40" letter-spacing="6"></text>
+        <text id="readoutLabel" text-anchor="middle" fill="var(--lilac)" font-family="Montserrat" font-weight="500" font-size="16" letter-spacing="6" opacity=".6"></text>
         <g id="words" font-family="Montserrat" font-weight="600" font-size="46" fill="var(--lilac)" text-anchor="middle"></g>
+        <g id="captions" font-family="Montserrat" font-weight="500" font-size="19" fill="var(--lilac)" text-anchor="middle"></g>
         <g id="beanOutline" fill="none" stroke="var(--lilac)" stroke-linecap="round">
-          <ellipse id="beanOutlineE" cx="0" cy="0" rx="32.5" ry="44" pathLength="1" transform="rotate(-90)"/>
+          <ellipse id="beanOutlineE" cx="0" cy="0" rx="44" ry="32.5" pathLength="1" transform="rotate(-90)"/>
           <path id="beanOutlineC" d="M4 -48 C-9 -24 12 -6 1 12 C-6 24 -5 36 -4 48" pathLength="1"/>
         </g>
       </g>
@@ -95,7 +106,12 @@
       </g>
 
       <!-- the bean travels between layers, so it lives on top -->
-      <g id="bean"><rect x="-80" y="-80" width="160" height="160" mask="url(#beanMask)" id="beanFill"/></g>
+      <g id="bean"><g mask="url(#beanMask)">
+        <rect x="-80" y="-80" width="160" height="160" id="beanFill"/>
+        <ellipse id="beanShade" cx="0" cy="0" rx="33" ry="44.5" fill="url(#beanShadeG)"/>
+        <ellipse id="beanSheen" cx="-14" cy="-16" rx="6" ry="15" fill="url(#beanSheenG)" transform="rotate(16 -14 -16)" opacity="0"/>
+        <ellipse id="beanSheen2" cx="15" cy="20" rx="3.5" ry="9" fill="url(#beanSheenG)" transform="rotate(12 15 20)" opacity="0"/>
+      </g></g>
     </g>
   </svg>
   <canvas id="fx"></canvas>
@@ -107,7 +123,7 @@
   const qs = new URLSearchParams(location.search);
   const W = +qs.get('w') || 1080, H = +qs.get('h') || 1920;
   const CAPTURE = qs.has('capture');
-  const DURATION = 11.0;
+  const DURATION = 14.6;
   if (CAPTURE) document.body.classList.add('capture');
 
   const stage = document.getElementById('stage');
@@ -196,32 +212,53 @@
     return out;
   }
 
-  let title, sub, wordEls, ticks = [];
+  // Roast physics (stylised): bean temperature over roast progress x in [0,1]
+  const TEMP = x => 25 + 190 * (1 - Math.exp(-2.6 * x)) / (1 - Math.exp(-2.6));
+  const XAT = T => -Math.log(1 - (T - 25) / 190 * (1 - Math.exp(-2.6))) / 2.6;
+  const X_DRY = XAT(150), X_CRACK = XAT(196);
+  const R0 = 1.9, R1 = 7.9;                       // roast runs between these times
+  const tAt = x => R0 + (R1 - R0) * x;
+  const T_CRACK = tAt(X_CRACK);
+  const STAGES = [
+    ['GREEN', 'RAW  ·  DENSE  ·  UNROASTED', 0.55, R0 + .35],
+    ['DRYING', 'MOISTURE ESCAPES', R0 + .35, tAt(X_DRY)],
+    ['BROWNING', 'SUGARS CARAMELISE', tAt(X_DRY), T_CRACK - .05],
+    ['FIRST CRACK', 'THE BEAN EXPANDS AND POPS', T_CRACK - .05, T_CRACK + 1.05],
+    ['ROASTED', 'DEVELOPED  ·  AROMATIC', T_CRACK + 1.05, 8.75],
+  ];
+  const GW = 300, GH = W > H ? 150 : 240;
+
+  let title, sub, wordEls, capEls, gTicks = [], gStages = [], gLabels = [];
   function build() {
     title = layoutLetters($('title'), 'CREST & CALIPER', 851, 178);
     sub = layoutLetters($('sub'), 'COFFEE ROASTERS', 573, 260);
-    wordEls = ['SOURCED', 'MEASURED', 'ROASTED'].map(w => {
-      const t = el('text', { 'letter-spacing': 16 }, $('words')); t.textContent = w; return t;
-    });
-    for (let i = 0; i <= 40; i++) ticks.push(el('line', {}, $('ticks')));
+    wordEls = STAGES.map(st => { const t = el('text', { 'letter-spacing': 16 }, $('words')); t.textContent = st[0]; return t; });
+    capEls = STAGES.map(st => { const t = el('text', { 'letter-spacing': 6 }, $('captions')); t.textContent = st[1]; return t; });
+    for (let i = 0; i <= 30; i++) gTicks.push(el('line', {}, $('gTicks')));
+    for (let i = 0; i < 2; i++) gStages.push(el('line', {}, $('gStages')));
+    gLabels = ['DRYING', 'MAILLARD', 'DEVELOPMENT'].map(w => { const t = el('text', {}, $('gLabels')); t.textContent = w; return t; });
   }
 
   // ---------- timeline ----------
   // Intro bean: big at centre. Logo bean: measured position in the source logo.
-  const BEAN_INTRO = { x: 0, y: -10, s: 4.2 };
+  const BEAN_INTRO = { x: 0, y: W > H ? -90 : -40, s: 3.8 };
   const BEAN_LOGO = { x: -5, y: -115, s: 1 };
   const DISC_R = 566;
 
   function render(t) {
     // ===== derived phases =====
-    const toLogo = eIO(seg(t, 4.95, 5.85));              // bean flies into logo
-    const discP = seg(t, 5.5, 6.5);                     // disc reveal
-    const discR = DISC_R * (discP < 1 ? eBack(eO3(discP) * 1, 1.15) : 1);
-    const bgMix = eIO(seg(t, 5.2, 7.2));                   // dark roastery -> cafe blur
-    const roast = seg(t, 3.15, 5.0);                      // roasting progress
-    const crack = Math.exp(-Math.pow((t - 4.35) / .07, 2)); // "first crack" pulse
-    const introFade = 1 - eIO(seg(t, 4.9, 5.5));          // HUD out
-    const cam = 1 + 0.06 * eIO(seg(t, 0, 5.2)) * (1 - toLogo);
+    const toLogo = eIO(seg(t, 8.55, 9.45));               // bean flies into logo
+    const discP = seg(t, 9.1, 10.1);                      // disc reveal
+    const discR = DISC_R * (discP < 1 ? eBack(eO3(discP), 1.15) : 1);
+    const bgMix = eIO(seg(t, 8.8, 10.8));                 // dark roastery -> cafe blur
+    const rx = seg(t, R0, R1);                            // roast progress (time)
+    const temp = t < R0 ? 24 : TEMP(rx);
+    const c = clamp((temp - 25) / 190);                   // roast colour progress (temperature)
+    const pulses = [[0, 1], [.22, .7], [.41, .85], [.57, .5], [.78, .35]];
+    let crack = 0; for (const [d, a] of pulses) crack += a * Math.exp(-Math.pow((t - T_CRACK - d) / .055, 2));
+    const introFade = 1 - eIO(seg(t, 8.5, 9.1));          // HUD out
+    const cam = 1 + 0.07 * eIO(seg(t, 0, 8.6)) * (1 - toLogo);
+    const grow = 1 + 0.15 * eIO(seg(c, .62, 1));          // beans swell as they roast
 
     // ===== BACKGROUND CANVAS =====
     g.setTransform(1, 0, 0, 1, 0, 0);
@@ -234,15 +271,17 @@
       g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r);
     };
     const M = Math.max(W, H);
-    // roaster fire glow (intro)
-    const fire = (0.35 + 0.65 * eIO(seg(t, 0.2, 2))) * (0.55 + 0.45 * roast) * (1 - bgMix) * (1 + .25 * crack);
+    const heat = eIO(seg(t, R0 - .4, R0 + 1.2));
+    const fire = (0.18 + 0.82 * heat) * (0.45 + 0.55 * c) * (1 - bgMix) * (1 + .25 * Math.min(1, crack));
     const flick = 1 + 0.05 * Math.sin(t * 13.7) + 0.04 * Math.sin(t * 7.1 + 1);
     blob(W / 2, H * 1.02, M * .62 * flick, 'rgba(255,110,40,A)', .55 * fire);
     blob(W / 2, H * 1.05, M * .32, 'rgba(255,170,80,A)', .45 * fire);
-    blob(CX + BEAN_INTRO.x * K, CY + BEAN_INTRO.y * K, M * .35, 'rgba(212,192,220,A)', .10 * (1 - bgMix) * eIO(seg(t, 0, 1.5)));
-    // café bokeh (final background, sampled from the reference)
+    // cool green-lilac halo around the raw bean, warming as it roasts
+    const halo = (1 - bgMix) * eIO(seg(t, 0, 1.5));
+    blob(CX, CY + BEAN_INTRO.y * K, M * .35, 'rgba(170,190,150,A)', .10 * halo * (1 - c));
+    blob(CX, CY + BEAN_INTRO.y * K, M * .35, 'rgba(255,150,80,A)', .10 * halo * c);
     if (bgMix > 0) {
-      const d = 1 - .08 * (1 - bgMix); // slight drift as it settles
+      const d = 1 - .08 * (1 - bgMix);
       blob(W * .22, H * .16 * d, M * .38, 'rgba(98,94,108,A)', .75 * bgMix);
       blob(W * .55, H * .05, M * .45, 'rgba(48,52,58,A)', .6 * bgMix);
       blob(W * .08, H * .78 / d, M * .42, 'rgba(150,132,116,A)', .85 * bgMix);
@@ -251,17 +290,17 @@
       blob(W * .5, H * 1.05, M * .35, 'rgba(14,18,22,A)', .8 * bgMix);
     }
 
-    // embers / roast sparks
+    // embers: sparse while green, building with the heat
     g.globalCompositeOperation = 'lighter';
-    const emberA = eIO(seg(t, 0.1, 1.2)) * (1 - eIO(seg(t, 5.6, 8.2)));
+    const emberA = eIO(seg(t, 0.1, 1.2)) * (0.35 + 0.65 * heat) * (1 - eIO(seg(t, 9.2, 11.8)));
     if (emberA > 0) for (const p of embers) {
-      const speed = p.sp * (1 + 1.4 * roast) * (0.6 + p.depth);
+      const speed = p.sp * (0.7 + 1.6 * c) * (0.6 + p.depth);
       const life = (p.off + t * speed) % 1;
       const y = H * (1.05 - life * 1.15);
       const x = W * p.x + Math.sin(t * p.wf + p.ph) * p.wob * (1 + p.depth);
       const a = emberA * Math.sin(life * Math.PI) * (0.55 + 0.45 * Math.sin(t * p.fl + p.ph)) * (0.35 + 0.65 * p.depth);
       const r = p.sz * (W / 1080) * (0.7 + p.depth);
-      const hot = 0.4 + 0.6 * roast;
+      const hot = 0.3 + 0.7 * c;
       const gr = g.createRadialGradient(x, y, 0, x, y, r * 4);
       gr.addColorStop(0, `rgba(255,${Math.round(lerp(190, 150, hot))},${Math.round(lerp(140, 70, hot))},${a})`);
       gr.addColorStop(.25, `rgba(255,120,40,${a * .5})`);
@@ -269,18 +308,21 @@
       g.fillStyle = gr; g.fillRect(x - r * 4, y - r * 4, r * 8, r * 8);
     }
 
-    // roast smoke rising off the bean
+    // drying vapour (white, wispy) then roast smoke (warmer, denser)
     g.globalCompositeOperation = 'screen';
-    const smokeA = eIO(seg(t, 3.0, 4.2)) * (1 - eIO(seg(t, 4.9, 5.6)));
-    if (smokeA > 0) for (const s of smoke) {
-      const life = (s.off + t * .28) % 1;
-      const bx = CX + BEAN_INTRO.x * K * cam, by = CY + (BEAN_INTRO.y - 44 * BEAN_INTRO.s * .8) * K * cam;
-      const x = bx + (s.dx * 70 * life + Math.sin(t * 1.3 + s.ph + life * 5) * 45 * life) * K * 2;
+    const vapour = eIO(seg(t, R0 + .3, R0 + 1.1)) * (1 - eIO(seg(t, tAt(X_DRY) - .3, tAt(X_DRY) + .5)));
+    const smokeI = eIO(seg(t, T_CRACK - 1.2, T_CRACK)) * (1 - eIO(seg(t, 8.5, 9.2)));
+    const smokeA = Math.max(vapour * .8, smokeI);
+    if (smokeA > 0.002) for (const sm of smoke) {
+      const life = (sm.off + t * (.22 + .1 * smokeI)) % 1;
+      const bx = CX + BEAN_INTRO.x * K * cam, by = CY + (BEAN_INTRO.y - 44 * BEAN_INTRO.s * grow * .8) * K * cam;
+      const x = bx + (sm.dx * 70 * life + Math.sin(t * 1.3 + sm.ph + life * 5) * 45 * life) * K * 2;
       const y = by - life * 900 * K;
-      const r = (s.sz * .35 + life * 110) * K * 1.4;
+      const r = (sm.sz * .35 + life * 110) * K * 1.4;
       const a = smokeA * .03 * Math.pow(Math.sin(life * Math.PI), 1.5);
+      const col = smokeI > vapour ? '215,200,205' : '235,240,245';
       const gr = g.createRadialGradient(x, y, 0, x, y, r);
-      gr.addColorStop(0, `rgba(220,205,225,${a})`); gr.addColorStop(1, 'rgba(220,205,225,0)');
+      gr.addColorStop(0, `rgba(${col},${a})`); gr.addColorStop(1, `rgba(${col},0)`);
       g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r);
     }
     g.globalCompositeOperation = 'source-over';
@@ -290,91 +332,101 @@
     $('intro').style.opacity = introFade;
 
     // --- bean ---
-    const bs = BEAN_INTRO.s;
-    const shake = crack * 6 * Math.sin(t * 160);
-    const pulse = 1 + 0.03 * crack + 0.012 * Math.sin(t * 2.2) * (1 - toLogo);
+    const bs = BEAN_INTRO.s * grow;
+    const crackC = Math.min(1, crack);
+    const nerves = seg(t, T_CRACK - .7, T_CRACK) * (1 - seg(t, T_CRACK + .9, T_CRACK + 1.1));
+    const shake = crackC * 6 * Math.sin(t * 160) + nerves * 1.2 * Math.sin(t * 90);
+    const pulse = 1 + 0.035 * crackC + 0.012 * Math.sin(t * 2.2) * (1 - toLogo);
     const bx = lerp(BEAN_INTRO.x * cam, BEAN_LOGO.x, toLogo) + shake;
     const by = lerp(BEAN_INTRO.y, BEAN_LOGO.y, toLogo);
-    // arc the flight slightly
     const arc = Math.sin(toLogo * Math.PI) * -28;
     const sc = lerp(bs * cam, BEAN_LOGO.s, eIO(toLogo)) * pulse;
-    const rot = lerp(-8, 0, eO3(seg(t, 0, 5.6))) + Math.sin(toLogo * Math.PI) * 14;
+    const rot = lerp(-8, 0, eO3(seg(t, 0, 9.2))) + Math.sin(toLogo * Math.PI) * 14 + crackC * 2.5 * Math.sin(t * 70);
     const beanAppear = eO5(seg(t, 0.25, 1.6));
     $('bean').setAttribute('transform', `translate(${bx},${by + arc}) rotate(${rot}) scale(${sc * lerp(.92, 1, beanAppear)})`);
-    // outline draw-on (intro only)
     $('beanOutline').setAttribute('transform', `translate(${BEAN_INTRO.x},${BEAN_INTRO.y}) rotate(${rot}) scale(${bs * pulse})`);
     $('beanOutline').style.strokeWidth = 2 / bs;
-    dash($('beanOutlineE'), eIO(seg(t, 0.25, 1.5)));
-    dash($('beanOutlineC'), eIO(seg(t, 0.9, 1.6)));
-    $('beanOutline').style.opacity = 1 - seg(t, 1.6, 2.4);
-    // colour: green coffee -> cinnamon -> full city -> brand ink
-    const raw = gradStops([[0, '#a7b086'], [.35, '#c89a5a'], [.65, '#a4623a'], [1, '#77432a']], roast);
-    const fillCol = mixHex(raw, '#29152F', eIO(seg(t, 5.45, 5.9)));
-    const fillOn = eIO(seg(t, 1.3, 2.3));
+    dash($('beanOutlineE'), eIO(seg(t, 0.25, 1.4)));
+    dash($('beanOutlineC'), eIO(seg(t, 0.8, 1.5)));
+    $('beanOutline').style.opacity = 1 - seg(t, 1.5, 2.2);
+    // the crease opens up as the bean expands, then settles to the logo's line
+    const crease = lerp(lerp(4.2, 6.8, eIO(seg(c, .6, 1))), 5.2, toLogo);
+    $('creaseMaskPath').setAttribute('stroke-width', crease);
+    // colour journey by bean temperature: green -> straw -> yellow -> cinnamon -> brown -> full roast
+    const raw = gradStops([[0, '#8fa877'], [.45, '#a9b27e'], [.6, '#cdbd7e'], [.66, '#d6aa63'], [.76, '#c0874c'], [.86, '#9c5d34'], [.93, '#7a4428'], [1, '#5b321f']], c);
+    const fillCol = mixHex(raw, '#29152F', eIO(seg(t, 9.05, 9.5)));
+    const fillOn = eIO(seg(t, 1.2, 2.1));
     $('beanFill').setAttribute('fill', fillCol);
     $('beanFill').style.opacity = fillOn;
+    $('beanShade').style.opacity = fillOn * (1 - eIO(seg(t, 9.0, 9.5)));
+    const oil = eIO(seg(c, .9, 1)) * (1 - eIO(seg(t, 8.6, 9.0)));
+    $('beanSheen').style.opacity = .55 * oil * (0.8 + 0.2 * Math.sin(t * 3));
+    $('beanSheen2').style.opacity = .35 * oil;
 
-    // --- caliper ---
-    const ex = 32.5 * bs, ey = 44 * bs;     // bean extents at intro scale
-    const top = BEAN_INTRO.y - ey - 70;
-    const rulerP = eIO(seg(t, 1.0, 1.9));
-    const RW = 330;
-    $('rulerLine').setAttribute('d', `M${-RW} ${top} L${RW} ${top}`);
-    dash($('rulerLine'), rulerP);
-    ticks.forEach((tk, i) => {
-      const x = -RW + i * (2 * RW / 40);
-      const big = i % 5 === 0;
-      const p = clamp(rulerP * 1.25 - Math.abs(x) / RW * 0.25 - (i / 40) * 0);
+    // --- roast curve graph ---
+    const ey = 44 * BEAN_INTRO.s * 1.15;
+    const GY = BEAN_INTRO.y + ey + 60 + GH;          // baseline
+    const gx = x => -GW + 2 * GW * x, gy = T => GY - (T - 25) / 190 * GH;
+    const axisP = eIO(seg(t, 1.1, 1.9));
+    $('gAxis').setAttribute('d', `M${-GW} ${GY} L${GW} ${GY}`);
+    dash($('gAxis'), axisP);
+    gTicks.forEach((tk, i) => {
+      const x = -GW + i * (2 * GW / 30), big = i % 5 === 0;
+      const p = clamp(axisP * 1.3 - (i / 30) * .3);
       tk.setAttribute('x1', x); tk.setAttribute('x2', x);
-      tk.setAttribute('y1', top); tk.setAttribute('y2', top + (big ? 18 : 9) * eO3(p));
-      tk.style.opacity = p > 0 ? (big ? .9 : .5) : 0;
+      tk.setAttribute('y1', GY); tk.setAttribute('y2', GY + (big ? 12 : 6) * eO3(p));
+      tk.style.opacity = p > 0 ? (big ? .7 : .35) : 0;
     });
-    const jawIn = eIO(seg(t, 1.5, 2.7));
-    const jawOut = eIO(seg(t, 3.3, 4.2));
-    const jx = lerp(RW + 20, ex + 3, jawIn) + jawOut * 80;
-    const jawLen = (ey + 70) * eO3(seg(t, 1.4, 2.0));
-    const jawA = seg(t, 1.4, 1.6) * (1 - jawOut);
-    for (const [id, s] of [['jawL', -1], ['jawR', 1]]) {
-      const x = s * jx;
-      $(id).setAttribute('d', `M${x} ${top - 10} L${x} ${top + jawLen} M${x} ${top - 10} L${x - s * 14} ${top - 10}`);
-      $(id).style.opacity = jawA;
-    }
-    const dimY = BEAN_INTRO.y + ey + 46;
-    const dimA = eIO(seg(t, 2.4, 2.9)) * (1 - jawOut);
-    $('dimLine').setAttribute('d', `M${-jx} ${dimY} L${jx} ${dimY} M${-jx} ${dimY - 10} L${-jx} ${dimY + 10} M${jx} ${dimY - 10} L${jx} ${dimY + 10}`);
-    $('dimLine').style.opacity = dimA;
-    $('dimArrowL').setAttribute('d', `M${-jx + 10} ${dimY - 6} L${-jx} ${dimY} L${-jx + 10} ${dimY + 6}`);
-    $('dimArrowR').setAttribute('d', `M${jx - 10} ${dimY - 6} L${jx} ${dimY} L${jx - 10} ${dimY + 6}`);
-    $('dimArrowL').style.opacity = $('dimArrowR').style.opacity = dimA;
+    [X_DRY, X_CRACK].forEach((xs, i) => {
+      const L = gStages[i], x = gx(xs);
+      const p = eO3(seg(rx, xs - .02, xs + .06));
+      L.setAttribute('x1', x); L.setAttribute('x2', x);
+      L.setAttribute('y1', GY); L.setAttribute('y2', GY - (GH + 10) * p);
+      L.style.opacity = .6 * p;
+    });
+    const bounds = [0, X_DRY, X_CRACK, 1];
+    gLabels.forEach((L, i) => {
+      L.setAttribute('x', gx((bounds[i] + bounds[i + 1]) / 2)); L.setAttribute('y', GY + 40);
+      const on = t >= R0 ? clamp((rx - bounds[i]) / .05) : 0;
+      const active = rx >= bounds[i] && rx < bounds[i + 1] && t < R1 + .4;
+      L.style.opacity = (axisP * .3 + .7 * on * (active ? 1 : .45)) * axisP;
+    });
+    let d = '';
+    const N = 80;
+    for (let i = 0; i <= N; i++) { const x = rx * i / N; d += (i ? 'L' : 'M') + gx(x).toFixed(1) + ' ' + gy(TEMP(x)).toFixed(1); }
+    const curveOn = t >= R0 ? 1 : 0;
+    $('gCurve').setAttribute('d', d); $('gCurveGlow').setAttribute('d', d);
+    $('gCurve').style.opacity = $('gCurveGlow').style.opacity = curveOn;
+    const hx = gx(rx), hy = gy(t < R0 ? 25 : temp);
+    const dotA = eIO(seg(t, 1.6, 2.0));
+    $('gDot').setAttribute('cx', hx); $('gDot').setAttribute('cy', hy);
+    $('gDot').setAttribute('fill', mixHex(raw, '#ffffff', .25));
+    $('gDot').style.opacity = dotA;
+    const hp = (t * 1.2) % 1;
+    $('gHalo').setAttribute('cx', hx); $('gHalo').setAttribute('cy', hy);
+    $('gHalo').setAttribute('r', 7 + 16 * hp + 26 * crackC);
+    $('gHalo').style.opacity = dotA * ((1 - hp) * .5 + crackC * .5);
 
-    // readout: width while measuring, then roast temperature
+    // readout: live bean temperature
     const ro = $('readout'), rl = $('readoutLabel');
-    const ry = dimY + 52;
-    ro.setAttribute('y', ry); rl.setAttribute('y', ry + 26);
     ro.setAttribute('x', 0); rl.setAttribute('x', 0);
-    if (t < 3.35) {
-      const v = lerp(14.0, 8.42, jawIn);
-      ro.textContent = v.toFixed(2) + ' MM';
-      rl.textContent = 'BEAN WIDTH';
-      ro.style.opacity = rl.style.opacity = eIO(seg(t, 1.7, 2.2)) * (1 - seg(t, 3.15, 3.35));
-    } else {
-      const temp = Math.round(lerp(176, 218, eO3(seg(t, 3.4, 4.9))));
-      ro.textContent = temp + '°C';
-      rl.textContent = t < 4.35 ? 'DRUM TEMP' : 'FIRST CRACK';
-      ro.style.opacity = eIO(seg(t, 3.35, 3.6));
-      rl.style.opacity = eIO(seg(t, 3.35, 3.6)) * (t < 4.35 ? 1 : .6 + .4 * Math.min(1, crack * 3 + .4));
-    }
+    ro.setAttribute('y', GY + 108); rl.setAttribute('y', GY + 138);
+    ro.textContent = Math.round(temp) + '°C';
+    rl.textContent = 'BEAN TEMPERATURE';
+    ro.style.opacity = rl.style.opacity = eIO(seg(t, 1.5, 2.1));
 
-    // headline words: slide through a mask line
-    const wordY = BEAN_INTRO.y - ey - 150;
-    const windows = [[0.7, 2.25], [2.25, 3.45], [3.45, 5.0]];
-    wordEls.forEach((w, i) => {
-      const [a, b] = windows[i];
+    // headline stage words + captions
+    const ty = BEAN_INTRO.y - ey - 110;
+    STAGES.forEach(([, , a, b], i) => {
+      const w = wordEls[i], cp = capEls[i];
       const pin = eO5(seg(t, a, a + .55)), pout = eI3(seg(t, b - .3, b));
-      const y = wordY + (1 - pin) * 36 - pout * 30;
-      w.setAttribute('x', 8); w.setAttribute('y', y);
-      w.style.opacity = (t >= a && t <= b) ? pin * (1 - pout) : 0;
+      const vis = (t >= a && t <= b) ? pin * (1 - pout) : 0;
+      w.setAttribute('x', 8); w.setAttribute('y', ty + (1 - pin) * 36 - pout * 30);
+      w.style.opacity = vis;
       w.setAttribute('letter-spacing', lerp(26, 16, pin));
+      const cin = eO5(seg(t, a + .15, a + .75));
+      cp.setAttribute('x', 3); cp.setAttribute('y', ty + 48 + (1 - cin) * 20 - pout * 20);
+      cp.style.opacity = (t >= a && t <= b) ? .6 * cin * (1 - pout) : 0;
     });
 
     // --- logo ---
@@ -383,28 +435,28 @@
     for (const c of [$('disc'), $('circleClipShape')]) { c.setAttribute('cx', dcx); c.setAttribute('cy', dcy); c.setAttribute('r', dr); }
     $('discShadeC').style.opacity = 1;
 
-    dash($('ring'), eIO(seg(t, 5.9, 7.1)));
+    dash($('ring'), eIO(seg(t, 9.5, 10.7)));
 
-    const bulb = eIO(seg(t, 6.05, 6.95));
-    const funnel = eIO(seg(t, 6.45, 7.25));
-    const bell = eIO(seg(t, 6.35, 7.2));
+    const bulb = eIO(seg(t, 9.65, 10.55));
+    const funnel = eIO(seg(t, 10.05, 10.85));
+    const bell = eIO(seg(t, 9.95, 10.8));
     document.querySelectorAll('#icon .bulb').forEach(p => dash(p, bulb));
     document.querySelectorAll('#icon .funnel').forEach(p => dash(p, funnel));
     document.querySelectorAll('#icon .bell').forEach(p => dash(p, bell));
-    const baseP = seg(t, 6.95, 7.5);
+    const baseP = seg(t, 10.55, 11.1);
     $('base').setAttribute('transform', `translate(0,${(1 - eO3(baseP)) * 30}) translate(0,655) scale(${baseP <= 0 ? 0 : eBack(baseP, 1.4)},1) translate(0,-655)`);
-    $('base').style.opacity = eO3(seg(t, 6.95, 7.2));
+    $('base').style.opacity = eO3(seg(t, 10.55, 10.8));
 
     // title: letters rise from behind a mask, staggered from the centre out
     title.forEach(L => {
       const c = Math.abs(L.i - (L.n - 1) / 2) / ((L.n - 1) / 2);
-      const st = 7.3 + c * 0.32;
+      const st = 10.9 + c * 0.32;
       const p = eO5(seg(t, st, st + .7));
       L.e.setAttribute('x', L.x * lerp(1.04, 1, p));
       L.e.setAttribute('y', L.y + (1 - p) * 96);
     });
     // subline: tracking settles in
-    const sp = eO5(seg(t, 7.95, 9.0));
+    const sp = eO5(seg(t, 11.55, 12.6));
     sub.forEach(L => {
       L.e.setAttribute('x', L.x * lerp(1.22, 1, sp));
       L.e.setAttribute('y', L.y);
@@ -412,7 +464,7 @@
     });
 
     // light sheen across the disc
-    const sh = seg(t, 9.0, 10.0);
+    const sh = seg(t, 12.6, 13.6);
     $('sheenRect').setAttribute('transform', `rotate(24) translate(${lerp(-900, 900, eIO(sh))},0)`);
     $('sheenRect').style.opacity = sh > 0 && sh < 1 ? .22 : 0;
 
@@ -423,23 +475,25 @@
       f.globalCompositeOperation = 'lighter';
       const x = CX + BEAN_INTRO.x * K * cam, y = CY + BEAN_INTRO.y * K * cam, r = M * .5;
       const gr = f.createRadialGradient(x, y, 0, x, y, r);
-      gr.addColorStop(0, `rgba(255,190,120,${.35 * crack})`); gr.addColorStop(1, 'rgba(255,120,40,0)');
+      gr.addColorStop(0, `rgba(255,190,120,${.32 * Math.min(1, crack)})`); gr.addColorStop(1, 'rgba(255,120,40,0)');
       f.fillStyle = gr; f.fillRect(0, 0, W, H);
       f.globalCompositeOperation = 'source-over';
     }
-    const ct = t - 4.33;
-    if (ct > 0 && ct < 1.1) {
+    [[0, 0, 1], [.41, 2.1, .7], [.78, 4.2, .45]].forEach(([dt, rotOff, amt]) => {
+      const ct = t - T_CRACK - dt + .02;
+      if (ct <= 0 || ct >= 1.1) return;
       const a = 1 - ct / 1.1;
-      chaff.forEach(c => {
-        const d = c.v * eO3(ct / 1.1) * K * 1.6;
-        const x = CX + (BEAN_INTRO.x * cam) * K + Math.cos(c.a) * d;
-        const y = CY + (BEAN_INTRO.y * cam) * K + Math.sin(c.a) * d + 120 * ct * ct * K;
-        f.save(); f.translate(x, y); f.rotate(c.rot + ct * 6);
-        f.fillStyle = `rgba(214,170,120,${a * .9})`;
-        f.beginPath(); f.ellipse(0, 0, c.sz * 1.8 * K * 1.6, c.sz * .7 * K * 1.6, 0, 0, 6.283); f.fill();
+      chaff.forEach((ch, k) => {
+        if (k / chaff.length > amt) return;
+        const dd = ch.v * eO3(ct / 1.1) * K * 1.6;
+        const x = CX + (BEAN_INTRO.x * cam) * K + Math.cos(ch.a + rotOff) * dd;
+        const y = CY + (BEAN_INTRO.y * cam) * K + Math.sin(ch.a + rotOff) * dd + 120 * ct * ct * K;
+        f.save(); f.translate(x, y); f.rotate(ch.rot + ct * 6);
+        f.fillStyle = `rgba(222,190,140,${a * .9})`;
+        f.beginPath(); f.ellipse(0, 0, ch.sz * 1.8 * K * 1.6, ch.sz * .7 * K * 1.6, 0, 0, 6.283); f.fill();
         f.restore();
       });
-    }
+    });
     // vignette
     const vg = f.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, Math.hypot(W, H) * .58);
     vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, `rgba(0,0,0,${lerp(.65, .32, bgMix)})`);
